@@ -8,6 +8,7 @@ import useToken from './components/userToken';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import SignUp from './components/Signup';
+import Thread from './components/Thread';
 
 function App() {
   const { token, setToken } = useToken();
@@ -17,14 +18,15 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/" component={Home} exact/>
+          <Route path="/thread/:id" component={Thread}/>
           <Route path="/signup">
-            {token ? <Redirect to="/dashboard" /> : <SignUp/>}
+            {token.token ? <Redirect to="/dashboard" /> : <SignUp/>}
           </Route>
           <Route path="/login">
-            {token ? <Redirect to="/dashboard" /> : <Login setToken={setToken} />}
+            {(token.token !== null) ? <Redirect to="/dashboard" /> : <Login setToken={setToken} />}
           </Route>
           <Route path="/dashboard">
-            {token ? <Dashboard/> : <Redirect to="/login" />}
+            {token.token ? <Dashboard/> : <Redirect to="/login" />}
           </Route>
           <Route path="/preferences">
             <Preferences />

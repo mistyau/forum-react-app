@@ -11,7 +11,7 @@ async function loginUser(credentials) {
         body: JSON.stringify(credentials)
     })
         .then(result => result.json())
-        .then(data => data.token)
+        //.then(data => data.token)
 }
 
 export default function Login({ setToken }) {
@@ -43,6 +43,7 @@ export default function Login({ setToken }) {
                 </label>
                 <div>
                     <button type="submit">Submit</button>
+                    <a href="/signup">Don't have an account? Sign up here.</a>
                 </div>
             </form>
         </div>
