@@ -1,6 +1,7 @@
 import './App.css';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import EditThread from './components/EditThread';
 import Preferences from './components/Preferences';
 import Login from './components/Login';
 import Home from './components/Home';
@@ -26,7 +27,10 @@ function App() {
             {(token.token !== null) ? <Redirect to="/dashboard" /> : <Login setToken={setToken} />}
           </Route>
           <Route path="/dashboard">
-            {token.token ? <Dashboard/> : <Redirect to="/login" />}
+            {token.token ? <Dashboard user={token}/> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/edit/:id">
+            {token.token ? <EditThread user={token} /> : <Redirect to="/login" />}
           </Route>
           <Route path="/preferences">
             <Preferences />
