@@ -1,14 +1,24 @@
 import { Route, Redirect } from "react-router";
-import { isLogin } from '../utils';
 
-const PrivateRoute = ({component: Component, ...rest}) => {
-  return (
-      // Show the component only when the use is logged in
-      // Otherwise, redirect the user to /login page
-      <Route {...rest} render={props => (
-          isLogin() ? <Component {...props } /> : <Redirect to="/login" />
-      )} />
-  )  
+// A wrapper for <Route> that redirects to the login
+// screen if you're not yet authenticated.
+function PrivateRoute ({ children, user, ...rest }) {
+    return (
+        <Route
+            {...rest}
+            render={({ location }) =>
+                user.token ? (
+                    children
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/login",
+                            state: { from: location }
+                        }}
+                    />
+                )
+            } />
+    )
 };
 
 export default PrivateRoute;

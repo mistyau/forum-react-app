@@ -1,14 +1,17 @@
 import { Route, Redirect } from "react-router";
-import { isLogin } from '../utils';
 
-const PublicRoute = ({component: Component, restricted, ...rest}) => {
+const PublicRoute = ({ children, restricted, user, ...rest }) => {
+
     return (
         // restricted = false => public route
         // restricted = true => restricted route
-        <Route {...rest} render={props => (
-            isLogin() && restricted ?
-                <Redirect to="/dashboard" />
-            : <Component {...props} />
+        <Route {...rest} render={({ location}) => (
+            user.token && restricted ?
+                (<Redirect to={{
+                pathname: "/dashboard",
+                state: { from: location }
+            }} />)
+            : (children)
         )} />
     );
 };
