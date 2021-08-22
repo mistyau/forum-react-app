@@ -35,7 +35,7 @@ export default function NavBar({ user }){
     }
 
     return (
-        <Navbar bg="light" expand="lg">
+        <Navbar bg="light" variant="light" expand="lg" className="navbar-wrapper">
             <Navbar.Brand href="/">Forum</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
