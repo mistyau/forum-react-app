@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom";
 
 export default function NavBar({ user }){
     const history = useHistory();
-    const [loggedIn, setLoggedIn] = useState(user.token ? true : false);
 
     const handleClick = () => {
         history.push("/login");
@@ -14,15 +13,10 @@ export default function NavBar({ user }){
 
     const logout = () => {
         sessionStorage.clear();
-        history.push("/");
-        setLoggedIn(false);
+        window.location.href = '/';
     }
 
-    useEffect(() => {
-        setLoggedIn(user.token ? true : false);
-    }, [user.token]);
-
-    if (loggedIn) {
+    if (user.token) {
         return (
             <Navbar bg="light" expand="lg">
                 <Navbar.Brand href="/">Forum</Navbar.Brand>
