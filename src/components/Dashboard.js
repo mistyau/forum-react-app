@@ -1,17 +1,30 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
 import CreateThread from "./CreateThreadForm";
+import PostThreadList from './UserPostList';
 import UserThreadList from "./UserThreadList";
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 
 export default function Dashboard({user}) {
 
   return(
-    <div className="dashboard-wrapper">
-      <h2>Dashboard</h2>
-      <h3>Welcome, {user.username}</h3>
-      <CreateThread user={user}/>
-      <UserThreadList user={user}/>
-    </div>
+    <Container fluid>
+      <Container fluid className="thread-wrapper">
+        <Tabs defaultActiveKey="threads" id="uncontrolled-tab-example" className="mb-3">
+          <Tab eventKey="home" title="Activity">
+            <CreateThread user={user} />
+          </Tab>
+          <Tab eventKey="threads" title="Threads">
+            <UserThreadList user={user} />
+          </Tab>
+          <Tab eventKey="posts" title="Posts">
+            <PostThreadList user={user} />
+          </Tab>
+        </Tabs>
+        {/*<CreateThread user={user}/>
+        <UserThreadList user={user}/>*/}
+      </Container>
+    </Container>
   );
 }
