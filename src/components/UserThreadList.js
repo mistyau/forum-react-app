@@ -1,16 +1,26 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import DeleteModal from "./DeleteConfirmation";
 
-function Thread({ thread, deleteThread }) {
+function Thread({ thread, deleteThread, user }) {
     return (
-        <div className="threadWrapper">
-            <Link to={"/thread/" + thread.id}>
-                {thread.subject}
-            </Link>
-            <p>by {thread.author} at { thread.createdAt }</p>
-            <Link to={"/edit/" + thread.id}>Edit</Link>
-            <button type="button" onClick={() => deleteThread(thread.id)}>Delete</button>
+        <div>
+            <Row>
+                <Col>
+                    <Link to={"/thread/" + thread.id}>
+                        {thread.subject}
+                    </Link>
+                    <p><small className="text-muted">{thread.createdAt}</small></p>
+                </Col>
+                <Col className="d-flex align-items-baseline justify-content-end">
+                    <Link to={"/edit/" + thread.id}>Edit</Link>
+                    <DeleteModal thread={thread} user={user} />
+                </Col>
+            </Row>
         </div>
     );
 };
@@ -67,9 +77,10 @@ export default function UserThreadList({ user }) {
 
     return (
         <div className="threads-container">
-            {threads.map((currentThread) => (
-                <Thread thread={currentThread} deleteThread={deleteThread} key={currentThread.id}/>
-            ))}
+            {!threads.length === 0 ? <p>No threads submitted yet.</p> :
+            (threads.map((currentThread) => (
+                <Thread thread={currentThread} user={user} key={currentThread.id}/>
+            )))}
         </div>
     )
 }
