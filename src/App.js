@@ -21,8 +21,12 @@ function App() {
       <BrowserRouter>
         <NavBar user={token} />
         <Switch>
-          <Route path="/" component={Home} exact/>
-          <Route path="/thread/:id" component={Thread}/>
+          <Route path="/" exact>
+            <Home />
+          </Route>
+          <Route path="/thread/:id"> 
+            <Thread user={token} />
+          </Route>
           <PublicRoute restricted={true} user={token} path="/signup">
             <SignUp/>
           </PublicRoute>
