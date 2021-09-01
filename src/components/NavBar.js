@@ -1,8 +1,9 @@
 import Button from "react-bootstrap/Button"
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { IoIosAdd } from "react-icons/io";
+import { IconContext } from "react-icons";
 
 export default function NavBar({ user }){
     const history = useHistory();
@@ -18,16 +19,20 @@ export default function NavBar({ user }){
 
     if (user.token) {
         return (
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light" variant="light" expand="lg" className="navbar-wrapper">
                 <Navbar.Brand href="/">Forum</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="/">Home</Nav.Link>
+                        <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                        <Nav.Link href="/create">Create a new thread</Nav.Link>
                     </Nav>
-                    <Navbar.Text>
-                        Signed in as: <a href="/dashboard">{user.username}</a>
-                    </Navbar.Text>
+                    <Nav className="pr-2">
+                        <Navbar.Text>
+                            Signed in as: <a href="/dashboard">{user.username}</a>
+                        </Navbar.Text>
+                    </Nav>
                     <Button variant="outline-success" onClick={logout}>Log Out</Button>
                 </Navbar.Collapse>
             </Navbar>
