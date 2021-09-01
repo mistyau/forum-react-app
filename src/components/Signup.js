@@ -1,5 +1,10 @@
 import axios from 'axios';
+import Button from 'react-bootstrap/Button';
+import Container from "react-bootstrap/Container";
+import Form from 'react-bootstrap/Form';
 import { useReducer, useState } from "react";
+import { useHistory } from 'react-router-dom';
+import './Login.css';
 
 const formReducer = (state, event) => {
     if (event.reset) {
@@ -17,7 +22,7 @@ const formReducer = (state, event) => {
 
 export default function SignUp() {
     const [formData, setFormData] = useReducer(formReducer, {});
-    //const [user, setUser] = useState({username: '', password: ''});
+    const history = useHistory();
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -27,12 +32,15 @@ export default function SignUp() {
             password: formData.password
         };
 
-        console.log(newUser);
-
-        axios.post("http://localhost:8080/api/v1/users/signup", newUser)
-            .then(response => console.log(response.data));
-        
-        setFormData({reset: true});
+        axios.post("http://localhost:8080/api/v1/auth/signup", newUser)
+            .then(response => {
+                console.log(response.data);
+                history.push("/login");
+            })
+            .catch((error) => {
+                console.log(error);
+                setFormData({reset: true});
+            });
     }
 
     const handleChange = event => {
@@ -43,29 +51,29 @@ export default function SignUp() {
     }
 
     return (
-        <div className="container">
+        <Container className="login-wrapper">
             <h1>Sign Up</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    <p>Username</p>
-                    <input
+            <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formBasicUsername">
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control
                         name="username"
                         type="text"
                         onChange={handleChange}
                         value={formData.username || ''}/>
-                </label>
-                <label>
-                    <p>Password</p>
-                    <input 
+                </Form.Group>
+                <Form.Group controlId="formBasicPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control 
                         name="password"
                         type="password"
                         onChange={handleChange}
                         value={formData.password || ''}/>
-                </label>
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-            </form>
-        </div>
+                </Form.Group>
+                <div className="pb-3">
+                    <Button variant="primary" type="submit" block>Submit</Button> 
+                </div>          
+            </Form>
+        </Container>
     );
 }
