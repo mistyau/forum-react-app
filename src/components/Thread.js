@@ -8,8 +8,9 @@ import { BsPencil, BsX } from "react-icons/bs";
 import { IconContext } from "react-icons/lib";
 import EditPostModal from "./EditModal";
 import { instance } from "../services";
+import DeleteModal from "./DeleteModal";
 
-function Post({ user, post, displayEditModal }) {
+function Post({ user, post, displayEditModal, displayDeleteModal }) {
     return (
         <div className="post-wrapper">
             <p>{ post.content }</p>
@@ -22,7 +23,7 @@ function Post({ user, post, displayEditModal }) {
                     <BsPencil onClick={() => displayEditModal(post.id, post.content)} />
                 </IconContext.Provider>
                 <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
-                    <BsX />
+                    <BsX onClick={() => displayDeleteModal(post.id)} />
                 </IconContext.Provider>
             </div> : null}
             
@@ -35,6 +36,7 @@ export default function Thread({ user }) {
     const [posts, setPosts] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
 
@@ -88,12 +90,21 @@ export default function Thread({ user }) {
         }
     }
 
+    const displayDeleteModal = (id) => {
+        setPostId(id);
+        setShowDeleteModal(true);
+    }
+
     const hideEditModal = () => {
         setShowEditModal(false);
     }
 
     const hideCreateModal = () => {
         setShowCreateModal(false);
+    }
+
+    const hideDeleteModal = () => {
+        setShowDeleteModal(false);
     }
 
     function editPost(id) {   
@@ -126,6 +137,18 @@ export default function Thread({ user }) {
         setShowCreateModal(false);
     }
 
+    function deletePost(id) {
+        instance.delete(`/users/${user.username}/posts/${id}`)
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+        setShowDeleteModal(false);
+    }
+
     return (
         <Container fluid className="thread-container">
             <div className="thread-wrapper">
@@ -140,7 +163,12 @@ export default function Thread({ user }) {
             <div className="thread-wrapper">
                 {!posts ? <p>No posts yet...</p> :
                 posts.map((currentPost) => (
-                <Post post={currentPost} displayEditModal={displayEditModal} user={user} key={currentPost.id} />
+                <Post 
+                    post={currentPost} 
+                    displayEditModal={displayEditModal}
+                    displayDeleteModal={displayDeleteModal} 
+                    user={user} 
+                    key={currentPost.id} />
             ))}
             </div>
             <EditPostModal
@@ -150,6 +178,12 @@ export default function Thread({ user }) {
                 handleEdit={editPost}
                 id={postId}
                 content={content} />
+            <DeleteModal
+                show={showDeleteModal}
+                handleClose={hideDeleteModal}
+                handleDelete={deletePost}
+                message={"Are you sure you want to delete this post? This action is permanent and cannot be undone."}
+                id={postId} />
             <CreatePostModal 
                 show={showCreateModal}
                 handleClose={hideCreateModal}
