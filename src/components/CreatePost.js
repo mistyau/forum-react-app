@@ -6,48 +6,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router';
 
-export default function CreatePostModal({ user, thread }) {
-    const [show, setShow] = useState(false);
-    const [content, setContent] = useState(null);
-    const history = useHistory();
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => {
-        if (user.token) {
-            setShow(true);
-        } else {
-            setShow(false);
-            history.push('/login');
-        }
-    };
-
-    const handleSubmit = () => {
-        const newPost = {
-            content: content
-        };
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user.token}`
-        };
-
-        axios.post(`http://localhost:8080/api/v1/users/${user.username}/threads/${thread.id}/posts`, newPost, {
-            headers: headers
-        }).then((response) => {
-            console.log(response.data);
-        }).catch((error) => {
-            console.log(error);
-        })
-
-        setShow(false);
-    }
+export default function CreatePostModal({ show, handleClose, setContent, handleSubmit }) {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Reply
-            </Button>
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create post</Modal.Title>

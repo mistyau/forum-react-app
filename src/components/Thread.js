@@ -1,27 +1,31 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import CreatePostModal from "./CreatePost";
 import { BsPencil, BsX } from "react-icons/bs";
 import { IconContext } from "react-icons/lib";
 import EditPostModal from "./EditModal";
+import { instance } from "../services";
 
-const baseURL = 'http://localhost:8080/api/v1';
-
-function Post({ post, displayEditModal }) {
+function Post({ user, post, displayEditModal }) {
     return (
         <div className="post-wrapper">
             <p>{ post.content }</p>
             <small>{ post.author }</small>
             <small className="text-muted"> at { post.createdAt }</small>
-            <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
-                <BsPencil onClick={() => displayEditModal(post.id, post.content)} />
-            </IconContext.Provider>
-            <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
-                <BsX/>
-            </IconContext.Provider>
+
+            {user.username === post.author ?
+            <div>
+                <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
+                    <BsPencil onClick={() => displayEditModal(post.id, post.content)} />
+                </IconContext.Provider>
+                <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
+                    <BsX />
+                </IconContext.Provider>
+            </div> : null}
+            
         </div>
     );
 }
@@ -30,13 +34,15 @@ export default function Thread({ user }) {
     const [thread, setThread] = useState(null);
     const [posts, setPosts] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
 
     const { id } = useParams();
+    const history = useHistory();
 
     useEffect(() => {
-        axios.get(baseURL + `/threads/${ id }`)
+        instance.get(`/threads/${ id }`)
             .then((response) => {
                 setThread(response.data);
             })
@@ -47,15 +53,15 @@ export default function Thread({ user }) {
 
     useEffect(() => { 
         let isMounted = true;
-        axios.get(baseURL + `/threads/${ id }/posts`) // requested twice
+        instance.get(`/threads/${id}/posts`) // requested twice
             .then((response) => {
                 if (isMounted) {
                     setPosts(response.data);
                 }
             })
-        .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => {
+                console.log(error);
+            });
 
         return () => {
             isMounted = false;
@@ -64,9 +70,7 @@ export default function Thread({ user }) {
 
     if (!thread) {
         return (
-            <div className="threads-container">
-                <h1>Thread Not Found!</h1>
-            </div>
+            null
         );
     }
 
@@ -76,27 +80,50 @@ export default function Thread({ user }) {
         setShowEditModal(true);
     }
 
+    const displayCreateModal = () => {
+        if (user.token) {
+            setShowCreateModal(true);
+        } else {
+            history.push('/login');
+        }
+    }
+
     const hideEditModal = () => {
         setShowEditModal(false);
     }
 
-    function editPost(id) {
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user.token}`
-        }
-        
+    const hideCreateModal = () => {
+        setShowCreateModal(false);
+    }
+
+    function editPost(id) {   
         const editedPost = {
             content: content
         };
 
-        axios.put(baseURL + `/users/${user.username}/posts/${id}`, editedPost, {
-            headers: headers
-        }).then((response) => {
-            console.log(response.data);
-        }).catch((error) => {
-            console.log(error);
-        })
+        instance.put(`/users/${user.username}/posts/${id}`, editedPost)
+            .then((response) => {
+                console.log(response.data);
+            }).catch((error) => {
+                console.log(error);
+            })
+
+        setShowEditModal(false);
+    }
+
+    function createPost() {
+        const newPost = {
+            content: content
+        };
+        
+        instance.post(`/users/${user.username}/threads/${id}/posts`, newPost)
+            .then((response) => {
+                console.log(response.data);
+            }).catch((error) => {
+                console.log(error);
+            })
+
+        setShowCreateModal(false);
     }
 
     return (
@@ -108,12 +135,12 @@ export default function Thread({ user }) {
                 <small className="text-muted"> at {thread.createdAt}</small>
             </div>
             <div className="thread-bar">
-                <CreatePostModal user={user} thread={thread} />
+                <Button variant="primary" onClick={() => displayCreateModal()}>Reply</Button>
             </div>
             <div className="thread-wrapper">
                 {!posts ? <p>No posts yet...</p> :
                 posts.map((currentPost) => (
-                <Post post={currentPost} displayEditModal={displayEditModal} key={currentPost.id} />
+                <Post post={currentPost} displayEditModal={displayEditModal} user={user} key={currentPost.id} />
             ))}
             </div>
             <EditPostModal
@@ -123,6 +150,11 @@ export default function Thread({ user }) {
                 handleEdit={editPost}
                 id={postId}
                 content={content} />
+            <CreatePostModal 
+                show={showCreateModal}
+                handleClose={hideCreateModal}
+                setContent={setContent}
+                handleSubmit={createPost} />
         </Container>
     );
 }
