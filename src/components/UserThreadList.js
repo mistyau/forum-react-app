@@ -19,7 +19,7 @@ function Thread({ thread, displayEditModal, displayDeleteModal }) {
                     <p><small className="text-muted">{thread.createdAt}</small></p>
                 </Col>
                 <Col className="d-flex align-items-baseline justify-content-end">
-                    <Button variant="outline-primary" onClick={() => displayEditModal(thread.id, thread.subject, thread.content)}>Edit</Button>
+                    <Button variant="outline-primary" onClick={() => displayEditModal(thread.id, thread.subject, thread.content, thread.tags)}>Edit</Button>
                     <Button variant="outline-danger" onClick={() => displayDeleteModal(thread.id)}>Delete</Button>
                 </Col>
             </Row>
@@ -79,10 +79,11 @@ export default function UserThreadList({ user }) {
         setShowDeleteConfirmation(false);
     }
 
-    const displayEditModal = (id, subject, content) => {
+    const displayEditModal = (id, subject, content, tags) => {
         setId(id);
         setSubject(subject);
         setContent(content);
+        setTags(!tags ? [] : tags);
         setShowEditModal(true);
     }
 
