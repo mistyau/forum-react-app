@@ -2,8 +2,9 @@ import Button from "react-bootstrap/Button";
 import FormControl from "react-bootstrap/FormControl";
 import InputGroup from "react-bootstrap/InputGroup";
 import Modal from "react-bootstrap/Modal";
+import Tags from "./Tags";
 
-export function EditThreadModal({ show, handleClose, setSubject, setContent, handleEdit, id, subject, content }) {
+export function EditThreadModal({ show, handleClose, setSubject, setContent, setTags, handleEdit, id, subject, content, tags }) {
 
     return (
         <>
@@ -25,6 +26,7 @@ export function EditThreadModal({ show, handleClose, setSubject, setContent, han
                             onChange={e => setContent(e.target.value)}
                             value={content || ''} />
                     </InputGroup>
+                    <Tags tags={tags} setTags={setTags} />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

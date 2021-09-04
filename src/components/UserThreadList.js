@@ -34,6 +34,7 @@ export default function UserThreadList({ user }) {
     const [showEditModal, setShowEditModal] = useState(false);
     const [subject, setSubject] = useState(null);
     const [content, setContent] = useState(null);
+    const [tags, setTags] = useState([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -92,7 +93,8 @@ export default function UserThreadList({ user }) {
     function editThread(id) {
         const editedThread = {
             subject: subject,
-            content: content
+            content: content,
+            tags: tags
         };
         instance.put(`/users/${user.username}/threads/${id}`, editedThread)
         .then(response => {
@@ -119,10 +121,12 @@ export default function UserThreadList({ user }) {
                 handleClose={hideEditModal}
                 setSubject={setSubject}
                 setContent={setContent}
+                setTags={setTags}
                 handleEdit={editThread}
                 id={id}
                 subject={subject}
-                content={content} />
+                content={content}
+                tags={tags} />
             <DeleteModal 
                 show={showDeleteConfirmation}
                 handleClose={hideDeleteModal}
