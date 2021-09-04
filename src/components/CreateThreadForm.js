@@ -1,7 +1,13 @@
 import axios from "axios";
 import { useReducer } from "react";
-
-const baseURL = "http://localhost:8080/api/v1/users";
+import { InputGroup } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import FormControl from "react-bootstrap/FormControl";
+import './Login.css';
+import Tags from "./Tags";
+import { useState } from "react";
+import { instance } from "../services";
 
 const formReducer = (state, event) => {
 
@@ -12,26 +18,25 @@ const formReducer = (state, event) => {
 }
 
 export default function CreateThread({ user }) {
-
     const [formData, setFormData] = useReducer(formReducer, {});
+    const [tags, setTags] = useState([]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
+        
         const newThread = {
-            subject: formData.subject
+            subject: formData.subject,
+            content: formData.content,
+            tags: tags
         };
 
         console.log(newThread);
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user.token}` 
-        };
-
-        axios.post(baseURL + `/${user.username}/threads`, newThread, {
-            headers: headers
-        }).then(response => console.log(response.data));
+        
+        instance.post(`/users/${user.username}/threads`, newThread)
+            .then(response => console.log(response.data))
+            .catch(error => {
+                console.log(error);
+            });
     };
 
     const handleChange = (e) => {
@@ -44,20 +49,33 @@ export default function CreateThread({ user }) {
     }
 
     return (
-        <div className="thread-form">
-            <h4>Create Thread</h4>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    <p>Thread Subject</p>
-                    <input  name="subject" 
-                            type="text"
-                            onChange={handleChange}
-                            value={formData.subject || ''} />
-                </label>
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
-            </form>
-        </div>
+        <Container fluid>
+            <div className="thread-wrapper">
+                <h3>Create New Thread</h3>
+                <InputGroup className="mb-3">
+                    <FormControl
+                        name="subject"
+                        placeholder="Subject"
+                        aria-label="Subject"
+                        aria-describedby="basic-addon1"
+                        onChange={handleChange}
+                        value={formData.subject || ''}
+                    />
+                </InputGroup>
+                <InputGroup className="mb-3">
+                    <FormControl
+                        as="textarea"
+                        name="content"
+                        placeholder="Content"
+                        aria-label="Content"
+                        aria-describedby="basic-addon1"
+                        onChange={handleChange}
+                        value={formData.content || ''}
+                    />
+                </InputGroup>
+                <Tags tags={tags} setTags={setTags} />
+                <Button variant="primary" type="submit" onClick={handleSubmit}>Submit</Button>
+            </div>
+        </Container>
     );
 }

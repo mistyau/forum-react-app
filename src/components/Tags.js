@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
 import "./Tags.css";
 
@@ -11,8 +10,7 @@ function Tag({ tag, index, removeTag}) {
     );  
 }
 
-export default function Tags() {
-    const [tags, setTags] = useState([]);
+export default function Tags({tags, setTags}) {
 
     const removeTag = (id) => {
         setTags([...tags.filter((tag, index) => index !== id)]);
