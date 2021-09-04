@@ -2,8 +2,7 @@ import Button from "react-bootstrap/Button"
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useHistory } from "react-router-dom";
-import { IoIosAdd } from "react-icons/io";
-import { IconContext } from "react-icons";
+import Search from "./Search";
 
 export default function NavBar({ user }){
     const history = useHistory();
@@ -28,6 +27,7 @@ export default function NavBar({ user }){
                         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link href="/create">Create a new thread</Nav.Link>
                     </Nav>
+                    <Search />
                     <Nav className="pr-2">
                         <Navbar.Text>
                             Signed in as: <a href="/dashboard">{user.username}</a>
@@ -47,6 +47,7 @@ export default function NavBar({ user }){
                 <Nav className="mr-auto">
                     <Nav.Link href="/">Home</Nav.Link>
                 </Nav>
+                <Search />
                 <Button variant="outline-success" onClick={handleClick}>Login</Button>
             </Navbar.Collapse>
         </Navbar>

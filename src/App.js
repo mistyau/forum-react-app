@@ -12,6 +12,8 @@ import PrivateRoute from './PrivateRoute';
 import SignUp from './components/Signup';
 import Thread from './components/Thread';
 import NavBar from './components/NavBar';
+import CreateThread from './components/CreateThreadForm';
+import SearchList from './components/SearchList';
 
 function App() {
   const { token, setToken } = useToken();
@@ -21,12 +23,15 @@ function App() {
       <BrowserRouter>
         <NavBar user={token} />
         <Switch>
-          <Route path="/" exact>
+          <PublicRoute restricted={false} user={token} path="/" exact>
             <Home />
-          </Route>
-          <Route path="/thread/:id"> 
+          </PublicRoute>
+          <PublicRoute restricted={false} user={token} path="/thread/:id"> 
             <Thread user={token} />
-          </Route>
+          </PublicRoute>
+          <PublicRoute restricted={false} user={token} path="/search/:parameters">
+            <SearchList />
+          </PublicRoute>
           <PublicRoute restricted={true} user={token} path="/signup">
             <SignUp/>
           </PublicRoute>
@@ -35,6 +40,9 @@ function App() {
           </PublicRoute>
           <PrivateRoute user={token} path="/dashboard">
             <Dashboard user={token}/>
+          </PrivateRoute>
+          <PrivateRoute user={token} path="/create">
+            <CreateThread user={token} />
           </PrivateRoute>
           <PrivateRoute user={token} path="/edit/:id">
             <EditThread user={token} />
