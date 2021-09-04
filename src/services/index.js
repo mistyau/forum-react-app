@@ -19,7 +19,7 @@ instance.interceptors.request.use(
     error => {
         Promise.reject(error);
     }
-)
+);
 
 // response interceptor
 instance.interceptors.response.use((response) => {
@@ -55,6 +55,7 @@ instance.interceptors.response.use((response) => {
                 console.log(res.data);
                 // 1. Store the token
                 sessionStorage.setItem('token', JSON.stringify(res.data.access_token));
+                sessionStorage.setItem('refresh_token', JSON.stringify(res.data.refresh_token));
 
                 // 2. Change authorization header
                 originalRequest.headers['Authorization'] = 'Bearer ' + JSON.parse(sessionStorage.getItem('token'));
