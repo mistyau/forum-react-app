@@ -18,22 +18,30 @@ function Post({ user, post, displayEditModal, displayDeleteModal }) {
             <small className="text-muted"> at { post.createdAt }</small>
 
             {user.username === post.author ?
-            <div>
-                <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
+            <span>
+                <IconContext.Provider value={{ className: "react-icons" }}>
                     <BsPencil onClick={() => displayEditModal(post.id, post.content)} />
                 </IconContext.Provider>
-                <IconContext.Provider value={{ color: 'slate', size: '20px' }}>
+                <IconContext.Provider value={{ className: "react-icons" }}>
                     <BsX onClick={() => displayDeleteModal(post.id)} />
                 </IconContext.Provider>
-            </div> : null}
+            </span> : null}
             
         </div>
     );
 }
 
+function Tag({ tag}) {
+    return (
+        <li className="tag">
+            <span className="tag-title">{tag}</span>
+        </li>
+    );  
+}
+
 export default function Thread({ user }) {
     const [thread, setThread] = useState(null);
-    const [posts, setPosts] = useState(null);
+    const [posts, setPosts] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -51,24 +59,15 @@ export default function Thread({ user }) {
             .catch((error) => {
                 console.log(error);
             });
-    }, [id]);
 
-    useEffect(() => { 
-        let isMounted = true;
-        instance.get(`/threads/${id}/posts`) // requested twice
-            .then((response) => {
-                if (isMounted) {
-                    setPosts(response.data);
-                }
+        instance.get(`/threads/${id}/posts`)
+            .then(res => {
+                setPosts(res.data);
             })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        return () => {
-            isMounted = false;
-        };
-    });
+            .catch(err => {
+                console.log(err);
+            })
+    }, [id]);
 
     if (!thread) {
         return (
@@ -115,6 +114,13 @@ export default function Thread({ user }) {
         instance.put(`/users/${user.username}/posts/${id}`, editedPost)
             .then((response) => {
                 console.log(response.data);
+                setPosts(posts.map(post => {
+                    if (post.id === id) {
+                        return {...post, content: content};
+                    } else {
+                        return post;
+                    }
+                }));
             }).catch((error) => {
                 console.log(error);
             })
@@ -130,6 +136,7 @@ export default function Thread({ user }) {
         instance.post(`/users/${user.username}/threads/${id}/posts`, newPost)
             .then((response) => {
                 console.log(response.data);
+                setPosts([...posts, response.data]);
             }).catch((error) => {
                 console.log(error);
             })
@@ -141,6 +148,7 @@ export default function Thread({ user }) {
         instance.delete(`/users/${user.username}/posts/${id}`)
             .then(res => {
                 console.log(res.data);
+                setPosts([...posts.filter(el => el.id !== id)]);
             })
             .catch(err => {
                 console.log(err);
@@ -156,12 +164,17 @@ export default function Thread({ user }) {
                 <p>{thread.content}</p>
                 <small>{thread.author}</small>
                 <small className="text-muted"> at {thread.createdAt}</small>
+                <ul id="tags">
+                    {!thread.tags ? null : thread.tags.map((tag, index) => (
+                        <Tag tag={tag} key={index} />
+                    ))}
+                </ul>
             </div>
             <div className="thread-bar">
                 <Button variant="primary" onClick={() => displayCreateModal()}>Reply</Button>
             </div>
             <div className="thread-wrapper">
-                {!posts ? <p>No posts yet...</p> :
+                {posts.length === 0 ? <p>No posts yet...</p> :
                 posts.map((currentPost) => (
                 <Post 
                     post={currentPost} 

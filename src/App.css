@@ -1,3 +1,8 @@
+.dashboard-wrapper {
+  margin: 1em;
+  background-color: white;
+}
+
 .navbar-wrapper {
   filter: drop-shadow(0 5px .75rem gray);
 }
@@ -16,9 +21,27 @@ html {
 
 .thread-wrapper {
   margin: 1em auto;
+  padding: 0em 1em;
   background-color: white;
   filter: drop-shadow(0 0 .75rem gray);
   opacity: 90%;
+}
+
+.post-wrapper {
+  border-width: thin;
+  border-color: slategray;
+  border-bottom-style: solid;
+}
+
+.post-wrapper p {
+  margin: 0rem;
+}
+
+.react-icons {
+  color: 'slate';
+  font-size: 1.3em;
+  cursor: pointer;
+  vertical-align: sub;
 }
 
 /*
