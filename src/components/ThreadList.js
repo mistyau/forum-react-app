@@ -1,11 +1,8 @@
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import { instance } from "../services";
-
-const baseURL = 'http://localhost:8080/api/v1';
+import CustomPagination from "./CustomPagination";
 
 function Thread({ thread }) {
     return (
@@ -18,19 +15,24 @@ function Thread({ thread }) {
     );
 };
 
+let PageSize = 10;
+
 export default function ThreadList() {
 
     const [threads, setThreads] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
-        instance.get('/threads')
+        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=new`)
             .then((response) => {
-                setThreads(response.data);
+                setThreads(response.data.threads);
+                setTotalCount(response.data.totalCount);
             })
             .catch((error) => {
                 console.log(error);
             });
-    }, []);
+    }, [currentPage]);
 
     if (!threads) {
         return null;
@@ -41,6 +43,12 @@ export default function ThreadList() {
             {threads.map((currentThread) => (
                 <Thread thread={currentThread} key={currentThread.id}/>
             ))}
+            <CustomPagination
+                currentPage={currentPage}
+                totalCount={totalCount}
+                pageSize={PageSize}
+                onPageChange={page => setCurrentPage(page)} 
+            />
         </Container>
-    )
+    );
 }
