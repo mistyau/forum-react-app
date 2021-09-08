@@ -68,7 +68,7 @@ export default function Login({ setToken }) {
                 </Form.Group>
                 <Button variant="primary" type="submit" block>Submit</Button>
                 <Form.Text id="loginHelpInline" muted>
-                    Don't have an account? <a href="/signup">Sign in here.</a>
+                    Don't have an account? <a href="/signup">Sign up here.</a>
                 </Form.Text>
             </Form>
         </Container>
