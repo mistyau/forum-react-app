@@ -27,6 +27,11 @@ html {
   opacity: 90%;
 }
 
+.thread-wrapper h1 {
+  padding-top: .5rem;
+  padding-bottom: 1rem;
+}
+
 .post-wrapper {
   border-width: thin;
   border-color: slategray;
@@ -42,6 +47,41 @@ html {
   font-size: 1.3em;
   cursor: pointer;
   vertical-align: sub;
+}
+
+.heart-icon {
+  font-size: 2.5em;
+  color: gainsboro;
+  margin: auto .3em;
+  margin-left: -0em;
+}
+
+.like-wrapper {
+  padding-top: 1em;
+}
+
+.like-button {
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.like-button:hover {
+  color: pink;
+}
+
+.liked-icon {
+  font-size: 1.5em;
+  color: pink;
+}
+
+.likes-text {
+  position: relative;
+  left: -2.25em;
+  display: inline-block;
+}
+
+.search-bar {
+  margin-right: .5em;
 }
 
 /*
