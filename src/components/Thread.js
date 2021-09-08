@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container";
@@ -9,6 +8,7 @@ import { IconContext } from "react-icons/lib";
 import EditPostModal from "./EditModal";
 import { instance } from "../services";
 import DeleteModal from "./DeleteModal";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 function Post({ user, post, displayEditModal, displayDeleteModal }) {
     return (
@@ -47,6 +47,7 @@ export default function Thread({ user }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
+    const [isLiked, setIsLiked] = useState(false);
 
     const { id } = useParams();
     const history = useHistory();
@@ -60,13 +61,23 @@ export default function Thread({ user }) {
                 console.log(error);
             });
 
+        instance.get(`/users/${user.username}/threads/${id}/likes`)
+            .then(res => {
+                if (res.data !== null) {
+                    setIsLiked(true);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
         instance.get(`/threads/${id}/posts`)
             .then(res => {
                 setPosts(res.data);
             })
             .catch(err => {
                 console.log(err);
-            })
+            });
     }, [id]);
 
     if (!thread) {
@@ -157,6 +168,27 @@ export default function Thread({ user }) {
         setShowDeleteModal(false);
     }
 
+    function likeThread() {
+        if (isLiked) {
+            return (
+                <p> yo oagkg</p>
+            );
+        }
+
+        instance.post(`/users/${user.username}/threads/${id}/likes`)
+            .then(res => {
+                console.log(res.data);
+                setIsLiked(true);
+                setThread({
+                    ...thread,
+                    likes: thread.likes + 1
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     return (
         <Container fluid className="thread-container">
             <div className="thread-wrapper">
@@ -164,6 +196,15 @@ export default function Thread({ user }) {
                 <p>{thread.content}</p>
                 <small>{thread.author}</small>
                 <small className="text-muted"> at {thread.createdAt}</small>
+                <div className="like-wrapper">
+                    {!isLiked ? 
+                    <IconContext.Provider value={{className: "like-button"}}>
+                        <AiOutlineHeart onClick={() => likeThread()} /> <span> { thread.likes } likes </span>
+                    </IconContext.Provider>  
+                    : <IconContext.Provider value={{className: "liked-icon"}}>
+                    <AiFillHeart /> <span> { thread.likes } likes </span>
+                </IconContext.Provider>}
+                </div>
                 <ul id="tags">
                     {!thread.tags ? null : thread.tags.map((tag, index) => (
                         <Tag tag={tag} key={index} />
