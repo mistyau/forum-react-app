@@ -1,16 +1,34 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
 import { instance } from "../services";
 import CustomPagination from "./CustomPagination";
+import { AiOutlineHeart } from "react-icons/ai";
+import { IconContext } from "react-icons";
 
 function Thread({ thread }) {
     return (
         <div className="thread-wrapper">
-            <Link to={"/thread/" + thread.id}>
-                {thread.subject}
-            </Link>
-            <p>by {thread.author} at { thread.createdAt }</p>
+            <div className="d-flex flex-row">
+                <div className="align-self-center">
+                    <IconContext.Provider value={{ className: 'heart-icon'}}>
+                        <AiOutlineHeart />
+                        <span className="likes-text">
+                           { thread.likes } 
+                        </span>    
+                    </IconContext.Provider>
+                </div>
+                <div className="d-flex flex-column">
+                    <Link to={"/thread/" + thread.id}>
+                        {thread.subject}
+                    </Link>
+                    <p>by {thread.author} at {thread.createdAt}</p>
+                </div>
+            </div>
+            
+            
         </div>
     );
 };
@@ -41,13 +59,13 @@ export default function ThreadList() {
     return (
         <Container fluid className="thread-container">
             {threads.map((currentThread) => (
-                <Thread thread={currentThread} key={currentThread.id}/>
+                <Thread thread={currentThread} key={currentThread.id} />
             ))}
             <CustomPagination
                 currentPage={currentPage}
                 totalCount={totalCount}
                 pageSize={PageSize}
-                onPageChange={page => setCurrentPage(page)} 
+                onPageChange={page => setCurrentPage(page)}
             />
         </Container>
     );
