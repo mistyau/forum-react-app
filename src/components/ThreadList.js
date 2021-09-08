@@ -7,6 +7,7 @@ import { instance } from "../services";
 import CustomPagination from "./CustomPagination";
 import { AiOutlineHeart } from "react-icons/ai";
 import { IconContext } from "react-icons";
+import Nav from "react-bootstrap/Nav";
 
 function Thread({ thread }) {
     return (
@@ -40,9 +41,10 @@ export default function ThreadList() {
     const [threads, setThreads] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
+    const [sort, setSort] = useState("new");
 
     useEffect(() => {
-        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=new`)
+        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=${sort}`)
             .then((response) => {
                 setThreads(response.data.threads);
                 setTotalCount(response.data.totalCount);
@@ -50,7 +52,7 @@ export default function ThreadList() {
             .catch((error) => {
                 console.log(error);
             });
-    }, [currentPage]);
+    }, [currentPage, sort]);
 
     if (!threads) {
         return null;
@@ -58,6 +60,19 @@ export default function ThreadList() {
 
     return (
         <Container fluid className="thread-container">
+            <Nav className="mt-2"
+                activeKey={`${sort}`}
+                onSelect={(selectedKey) => setSort(selectedKey)}>
+                <Nav.Item>
+                    <Nav.Link eventKey="new">New</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="popular">Popular</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link eventKey="old">Old</Nav.Link>
+                </Nav.Item>
+            </Nav>
             {threads.map((currentThread) => (
                 <Thread thread={currentThread} key={currentThread.id} />
             ))}
