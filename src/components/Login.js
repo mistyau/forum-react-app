@@ -38,17 +38,25 @@ export default function Login({ setToken }) {
 
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
-    const [validated, setValidated] = useState();
+    const [validated, setValidated] = useState(false);
     const [error, setError] = useState(null);
 
     const handleSubmit = async e => {
         e.preventDefault();
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
         const token = await loginUser({
           username,
           password
         });
 
         token === null ? setError('Username/password is invalid') : setToken(token);
+
+        setValidated(true);
       }
     
 
@@ -56,15 +64,29 @@ export default function Login({ setToken }) {
         <Container className="login-wrapper">
             <Panic error={error} />
             <h1>Log In</h1>
-            <Form onSubmit={handleSubmit}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Enter username" onChange={e => setUserName(e.target.value)} />
+                    <Form.Control 
+                        required
+                        type="text" 
+                        placeholder="Enter username" 
+                        onChange={e => setUserName(e.target.value)} />
+                        <Form.Control.Feedback type="invalid">
+                            Please enter a username.
+                        </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+                    <Form.Control
+                        required 
+                        type="password" 
+                        placeholder="Password" 
+                        onChange={e => setPassword(e.target.value)} />
+                        <Form.Control.Feedback type="invalid">
+                            Please enter a password.
+                        </Form.Control.Feedback>
                 </Form.Group>
                 <Button variant="primary" type="submit" block>Submit</Button>
                 <Form.Text id="loginHelpInline" muted>
