@@ -78,7 +78,7 @@ export default function Thread({ user }) {
             .catch(err => {
                 console.log(err);
             });
-    }, [id]);
+    }, [id, user.username]);
 
     if (!thread) {
         return (
