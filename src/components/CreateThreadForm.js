@@ -1,13 +1,12 @@
-import axios from "axios";
 import { useReducer } from "react";
-import { InputGroup } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import FormControl from "react-bootstrap/FormControl";
+import Form from "react-bootstrap/Form";
 import './Login.css';
 import Tags from "./Tags";
 import { useState } from "react";
 import { instance } from "../services";
+import { useHistory } from "react-router";
 
 const formReducer = (state, event) => {
 
@@ -20,20 +19,30 @@ const formReducer = (state, event) => {
 export default function CreateThread({ user }) {
     const [formData, setFormData] = useReducer(formReducer, {});
     const [tags, setTags] = useState([]);
+    const history = useHistory();
+    const [validated, setValidated] = useState(false);
 
     const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        setValidated(true);
         event.preventDefault();
-        
+
         const newThread = {
             subject: formData.subject,
             content: formData.content,
             tags: tags
         };
 
-        console.log(newThread);
-        
         instance.post(`/users/${user.username}/threads`, newThread)
-            .then(response => console.log(response.data))
+            .then(response => {
+                console.log(response.data);
+                history.push(`/thread/${response.data.id}`);
+            })
             .catch(error => {
                 console.log(error);
             });
@@ -52,29 +61,35 @@ export default function CreateThread({ user }) {
         <Container fluid>
             <div className="thread-wrapper">
                 <h3>Create New Thread</h3>
-                <InputGroup className="mb-3">
-                    <FormControl
-                        name="subject"
-                        placeholder="Subject"
-                        aria-label="Subject"
-                        aria-describedby="basic-addon1"
-                        onChange={handleChange}
-                        value={formData.subject || ''}
-                    />
-                </InputGroup>
-                <InputGroup className="mb-3">
-                    <FormControl
-                        as="textarea"
-                        name="content"
-                        placeholder="Content"
-                        aria-label="Content"
-                        aria-describedby="basic-addon1"
-                        onChange={handleChange}
-                        value={formData.content || ''}
-                    />
-                </InputGroup>
-                <Tags tags={tags} setTags={setTags} />
-                <Button variant="primary" type="submit" onClick={handleSubmit}>Submit</Button>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Control
+                            required
+                            name="subject"
+                            placeholder="Subject"
+                            aria-label="Subject"
+                            aria-describedby="basic-addon1"
+                            onChange={handleChange}
+                            value={formData.subject || ''}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Subject cannot be blank.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Control
+                            as="textarea"
+                            name="content"
+                            placeholder="Content"
+                            aria-label="Content"
+                            aria-describedby="basic-addon1"
+                            onChange={handleChange}
+                            value={formData.content || ''}
+                        />
+                    </Form.Group>
+                    <Tags tags={tags} setTags={setTags} />
+                    <Button variant="primary" type="button" onClick={handleSubmit}>Submit</Button>
+                </Form>
             </div>
         </Container>
     );
