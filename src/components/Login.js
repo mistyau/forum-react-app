@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import { useEffect } from 'react';
 
 function Panic({ error }) {
     if (error) {
@@ -42,23 +43,31 @@ export default function Login({ setToken }) {
     const [error, setError] = useState(null);
 
     const handleSubmit = async e => {
-        e.preventDefault();
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
         }
 
-        const token = await loginUser({
-          username,
-          password
-        });
+        if (form.checkValidity() === true) {
+            e.preventDefault();
+            const token = await loginUser({
+                username,
+                password
+            });
 
-        token === null ? setError('Username/password is invalid') : setToken(token);
+            token === null ? setError('Username/password is invalid') : setToken(token);
+        }
 
-        setValidated(true);
-      }
-    
+         setValidated(true);
+    }
+
+    useEffect(() => {
+        // clean up function
+        return () => {
+            setValidated(null);
+        };
+    });
 
     return (
         <Container className="login-wrapper">
