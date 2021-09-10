@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
@@ -19,7 +18,7 @@ function Post({ post, displayEditModal, displayDeleteModal }) {
                     <p><small className="text-muted">{post.createdAt}</small></p>
                 </Col>
                 <Col className="d-flex align-items-baseline justify-content-end">
-                    <Button variant="outline-info" onClick={() => displayEditModal(post.id, post.content)}>Edit</Button>
+                    <Button variant="outline-info" className="mr-1" onClick={() => displayEditModal(post.id, post.content)}>Edit</Button>
                     <Button variant="outline-danger" onClick={() => displayDeleteModal(post.id)}>Delete</Button>
                 </Col>
             </Row>
@@ -27,23 +26,12 @@ function Post({ post, displayEditModal, displayDeleteModal }) {
     );
 };
 
-const baseURL = "http://localhost:8080/api/v1/users"; 
-
 export default function UserPostList({ user }) {
     const [posts, setPosts] = useState(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
-
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${user.token}`
-    };
-
-    const headersDelete = {
-        'Authorization': `Bearer ${user.token}`
-    };
 
     useEffect(() => {
         let isMounted = true;
@@ -128,7 +116,8 @@ export default function UserPostList({ user }) {
                 setContent={setContent}
                 handleEdit={editPost}
                 id={postId}
-                content={content} />
+                content={content}
+                 />
             <DeleteModal 
                 show={showDeleteConfirmation} 
                 handleClose={hideDeleteModal} 
