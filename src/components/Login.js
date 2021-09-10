@@ -49,25 +49,23 @@ export default function Login({ setToken }) {
             e.stopPropagation();
         }
 
-        if (form.checkValidity() === true) {
-            e.preventDefault();
-            const token = await loginUser({
-                username,
-                password
-            });
+        setValidated(true);
 
-            token === null ? setError('Username/password is invalid') : setToken(token);
-        }
+        e.preventDefault();
+        const token = await loginUser({
+            username,
+            password
+        });
 
-         setValidated(true);
+        token === null ? setError('Username/password is invalid') : setToken(token);         
     }
 
     useEffect(() => {
         // clean up function
         return () => {
-            setValidated(null);
+            setValidated(false);
         };
-    });
+    }, []);
 
     return (
         <Container className="login-wrapper">
