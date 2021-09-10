@@ -1,10 +1,9 @@
-import CreateThread from "./CreateThreadForm";
 import UserThreadList from "./UserThreadList";
 import Container from 'react-bootstrap/Container';
-import { useState } from "react";
 import { Nav } from "react-bootstrap";
 import { Route, Switch, useRouteMatch } from "react-router";
 import UserPostList from "./UserPostList";
+import PrivateRoute from "../PrivateRoute";
 
 export default function Dashboard({user}) {
   let { path, url } = useRouteMatch();
@@ -28,12 +27,12 @@ export default function Dashboard({user}) {
           <Route exact path={path}>
             Under Construction
           </Route>
-          <Route path={`${path}/threads`}>
+          <PrivateRoute user={user} path={`${path}/threads`}>
             <UserThreadList user={user} />
-          </Route>
-          <Route path={`${path}/posts`}>
+          </PrivateRoute>
+          <PrivateRoute user={user} path={`${path}/posts`}>
             <UserPostList user={user} />
-          </Route>
+          </PrivateRoute>
         </Switch>        
       </Container>
     </Container>
