@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Container from 'react-bootstrap/Container';
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import { instance } from "../services";
 import CustomPagination from "./CustomPagination";
 import { AiOutlineHeart } from "react-icons/ai";

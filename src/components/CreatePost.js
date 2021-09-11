@@ -2,9 +2,6 @@ import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
-import { useState } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router';
 
 export default function CreatePostModal({ show, handleClose, setContent, handleSubmit }) {
 

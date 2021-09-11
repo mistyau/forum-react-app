@@ -1,8 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
-import EditThread from './components/EditThread';
 import Preferences from './components/Preferences';
 import Login from './components/Login';
 import Home from './components/Home';
@@ -43,9 +42,6 @@ function App() {
           </PrivateRoute>
           <PrivateRoute user={token} path="/create">
             <CreateThread user={token} />
-          </PrivateRoute>
-          <PrivateRoute user={token} path="/edit/:id">
-            <EditThread user={token} />
           </PrivateRoute>
           <PrivateRoute user={token} path="/preferences">
             <Preferences />
