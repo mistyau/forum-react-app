@@ -23,8 +23,18 @@ const formReducer = (state, event) => {
 export default function SignUp() {
     const [formData, setFormData] = useReducer(formReducer, {});
     const history = useHistory();
+    const [validated, setValidated] = useState(false);
+    const [succeeded, setSucceeded] = useState(false);
 
     const handleSubmit = event => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        setValidated(true);
+
         event.preventDefault();
 
         const newUser = {
@@ -53,22 +63,30 @@ export default function SignUp() {
     return (
         <Container className="login-wrapper">
             <h1>Sign Up</h1>
-            <Form onSubmit={handleSubmit}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control
+                        required
                         name="username"
                         type="text"
                         onChange={handleChange}
                         value={formData.username || ''}/>
+                    <Form.Control.Feedback type="invalid">
+                        Username cannot be blank.
+                    </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control 
+                        required
                         name="password"
                         type="password"
                         onChange={handleChange}
                         value={formData.password || ''}/>
+                    <Form.Control.Feedback type="invalid">
+                        Password cannot be blank.
+                    </Form.Control.Feedback>
                 </Form.Group>
                 <div className="pb-3">
                     <Button variant="primary" type="submit" block>Submit</Button> 
