@@ -1,5 +1,5 @@
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.scss';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Preferences from './components/Preferences';

@@ -1,0 +1,151 @@
+@import "custom";
+
+.navbar-wrapper {
+  filter: drop-shadow(0 0 3px gray("500"));
+}
+
+.dashboard-wrapper {
+  margin: 1em;
+  background-color: white;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+  background-color: theme-color("light");
+}
+
+.wrapper {
+  background-color: theme-color("light");
+}
+
+.form-wrapper {
+  margin: 1em auto;
+  background-color: white;
+  padding: 1em;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 .75rem gray("800"));
+}
+
+.thread-wrapper {
+  margin: 1em auto;
+  padding: .5em 1em;
+  background-color: white;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 3px gray("300"));
+}
+
+.thread-wrapper p {
+  margin: 0em;
+  padding-bottom: 5px;
+}
+
+.post-wrapper {
+  border-width: thin;
+  border-color: slategray;
+  border-bottom-style: solid;
+}
+
+.post-wrapper p {
+  margin: 0rem;
+}
+
+.react-icons {
+  color: 'slate';
+  font-size: 1.3em;
+  cursor: pointer;
+  vertical-align: sub;
+}
+
+.heart-icon {
+  font-size: 1em;
+  color: gray("500");
+  cursor: pointer;
+  position: relative;
+  bottom: 1px;
+}
+
+.heart-icon:hover {
+  color: pink;
+}
+
+.heart-icon-liked {
+  font-size: 1em;
+  color: pink;
+  cursor: pointer;
+  position: relative;
+  bottom: 1px;
+}
+
+.heart-icon-liked:hover {
+  color: gray("500");
+}
+
+.like-wrapper {
+  padding-top: 1em;
+}
+
+.like-button {
+  font-size: 2em;
+  cursor: pointer;
+}
+
+.like-button:hover {
+  color: pink;
+}
+
+.liked-icon {
+  font-size: 1.5em;
+  color: pink;
+}
+
+.likes-text {
+  position: relative;
+  left: -2.25em;
+  display: inline-block;
+}
+
+.search-bar {
+  margin-right: .5em;
+}
+
+#tags {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0;
+	margin: 8px 0 0 0;
+}
+
+.tag {
+	width: auto;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	padding: 0 8px;
+	font-size: 14px;
+	list-style: none;
+	border-radius: 6px;
+	margin: 0 8px 8px 0;
+	background: theme-color("info");
+  cursor: pointer;
+}
+
+.tag-title {
+    margin-top: 3px;
+}
+
+.tag-close-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    font-size: 14px;
+    margin-left: 8px;
+    color: #0052cc;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+}
