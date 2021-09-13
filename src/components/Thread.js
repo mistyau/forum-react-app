@@ -9,6 +9,7 @@ import EditPostModal from "./EditModal";
 import { instance } from "../services";
 import DeleteModal from "./DeleteModal";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { getDateAgo } from "../util";
 
 function Post({ user, post, displayEditModal, displayDeleteModal }) {
     return (
@@ -61,16 +62,18 @@ export default function Thread({ user }) {
                 console.log(error);
             });
 
-        instance.get(`/users/${user.username}/threads/${id}/likes`)
-            .then(res => {
-                if (res.data !== null) {
-                    setIsLiked(true);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            })
-
+        if (user.token) {
+            instance.get(`/users/${user.username}/threads/${id}/likes`)
+                .then(res => {
+                    if (res.data !== null) {
+                        setIsLiked(true);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+        
         instance.get(`/threads/${id}/posts`)
             .then(res => {
                 setPosts(res.data);
@@ -78,7 +81,7 @@ export default function Thread({ user }) {
             .catch(err => {
                 console.log(err);
             });
-    }, [id, user.username]);
+    }, [id, user.username, user.token]);
 
     if (!thread) {
         return (
@@ -178,7 +181,7 @@ export default function Thread({ user }) {
         instance.post(`/users/${user.username}/threads/${id}/likes`)
             .then(res => {
                 console.log(res.data);
-                setIsLiked(true);
+                setIsLiked(res.data);
                 setThread({
                     ...thread,
                     likes: thread.likes + 1
@@ -189,22 +192,48 @@ export default function Thread({ user }) {
             });
     }
 
+    function toggleLike(isLiked) {
+        if (isLiked) {
+            instance.delete(`/users/${user.username}/liked/${id}`)
+                .then(res => {
+                    console.log(res.data);
+                    setIsLiked(false);
+                    setThread({
+                        ...thread,
+                        likes: thread.likes - 1
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else {
+            instance.post(`/users/${user.username}/threads/${id}/likes`)
+                .then(res => {
+                    console.log(res.data);
+                    setIsLiked(true);
+                    setThread({
+                        ...thread,
+                        likes: thread.likes + 1
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }
+
     return (
         <Container fluid className="thread-container">
             <div className="thread-wrapper">
-                <h1>{thread.subject}</h1>
+                <p><b>{thread.author}</b></p>
+                <h3 className="mb-3">{thread.subject}</h3>
                 <p>{thread.content}</p>
-                <small>{thread.author}</small>
-                <small className="text-muted"> at {thread.createdAt}</small>
-                <div className="like-wrapper">
-                    {!isLiked ? 
-                    <IconContext.Provider value={{className: "like-button"}}>
-                        <AiOutlineHeart onClick={() => likeThread()} /> <span> { thread.likes } likes </span>
-                    </IconContext.Provider>  
-                    : <IconContext.Provider value={{className: "liked-icon"}}>
-                    <AiFillHeart /> <span> { thread.likes } likes </span>
-                </IconContext.Provider>}
-                </div>
+                <p className="text-muted">
+                    <IconContext.Provider value={{ className: isLiked ? 'heart-icon-liked' : 'heart-icon' }}>
+                        <AiFillHeart onClick={() => toggleLike(isLiked)} />
+                    </IconContext.Provider> {thread.likes} likes &bull; { }
+                    {getDateAgo(thread.createdAt)} ago
+                </p>
                 <ul id="tags">
                     {!thread.tags ? null : thread.tags.map((tag, index) => (
                         <Tag tag={tag} key={index} />
