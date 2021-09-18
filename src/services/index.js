@@ -66,5 +66,9 @@ instance.interceptors.response.use((response) => {
         });
     }
 
+    if (error.response.status === 404) {
+        return error.response;
+    }
+
     return Promise.reject(error);
 });
