@@ -1,66 +1,158 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { instance } from "../services";
 import CustomPagination from "./CustomPagination";
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Nav from "react-bootstrap/Nav";
+import { useHistory } from "react-router";
+import { getDateAgo } from "../util";
 
-function Thread({ thread }) {
+function Tag({ tag, findTag }) {
     return (
-        <div className="thread-wrapper">
-            <div className="d-flex flex-row">
-                <div className="align-self-center">
-                    <IconContext.Provider value={{ className: 'heart-icon'}}>
-                        <AiOutlineHeart />
-                        <span className="likes-text">
-                           { thread.likes } 
-                        </span>    
-                    </IconContext.Provider>
-                </div>
-                <div className="d-flex flex-column">
-                    <Link to={"/thread/" + thread.id}>
-                        {thread.subject}
-                    </Link>
-                    <p>by {thread.author} at {thread.createdAt}</p>
-                </div>
-            </div>
-            
-            
-        </div>
-    );
-};
+        <li className="tag" onClick={() => findTag(tag)}>
+            <span className="tag-title">{tag}</span>
+        </li>
+    );  
+}
 
-let PageSize = 10;
-
-export default function ThreadList() {
-
-    const [threads, setThreads] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-    const [sort, setSort] = useState("new");
+const Thread = forwardRef(({ thread }, ref) => {
 
     useEffect(() => {
-        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=${sort}`)
-            .then((response) => {
-                setThreads(response.data.threads);
-                setTotalCount(response.data.totalCount);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [currentPage, sort]);
+        if (!ref)
+            return;
+        return () => ref(null);
+    }, [ref]);
 
-    if (!threads) {
-        return null;
+    return (
+        <div className="thread-wrapper" ref={ref} >
+            <div className="d-flex flex-row">
+                <div className="d-flex flex-column">
+                    <p><b>{thread.author}</b></p>
+                    <h5><Link to={"/thread/" + thread.id}>
+                        {thread.subject}
+                    </Link></h5>
+                    <p>{thread.content}</p>
+                    
+                    <p className="text-muted">
+                        <IconContext.Provider value={{ className: 'heart-icon' }}>
+                            <AiFillHeart />
+                        </IconContext.Provider> {thread.likes} likes &bull; { }
+                        {getDateAgo(thread.createdAt)} ago
+                    </p>
+                    <ul id="tags">
+                        {!thread.tags ? null : thread.tags.map((tag, index) => (
+                            <Tag tag={tag} key={index} />
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
+});
+
+/*
+function Thread({ thread }) {
+    const history = useHistory();
+
+    const findTag = (tag) => {
+        history.push(`/search/${tag}`);
     }
 
     return (
+        <div className="thread-wrapper">
+            <div className="d-flex flex-row">
+                <div className="d-flex flex-column">
+                    <p><b>{thread.author}</b></p>
+                    <h5><Link to={"/thread/" + thread.id}>
+                        {thread.subject}
+                    </Link></h5>
+                    <p>{thread.content}</p>
+                    
+                    <p className="text-muted">
+                        <IconContext.Provider value={{ className: 'heart-icon' }}>
+                            <AiFillHeart />
+                        </IconContext.Provider> {thread.likes} likes &bull; { }
+                        {getDateAgo(thread.createdAt)} ago
+                    </p>
+                    <ul id="tags">
+                        {!thread.tags ? null : thread.tags.map((tag, index) => (
+                            <Tag tag={tag} findTag={findTag} key={index} />
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
+};
+*/
+
+let PageSize = 5;
+
+export default function ThreadList() {
+
+    const [threads, setThreads] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sort, setSort] = useState("new");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
+
+    const observer = useRef();
+    const lastThreadElementRef = useCallback(node => {
+        if (loading)
+            return;
+        if (observer.current)
+            observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                //console.log(currentPage);
+                setCurrentPage(prevPageNumber => prevPageNumber + 1);
+            }
+        });
+        if (node)
+            observer.current.observe(node);
+    }, [loading, hasMore]);
+
+    useEffect(() => {
+        setLoading(true);
+        setError(false);
+        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=${sort}`)
+            .then((response) => {
+                setThreads(prevThreads => {
+                    return [...prevThreads, ...response.data.threads];
+                });
+                
+                setHasMore(response.data.pageCount > 0);
+                setLoading(false);
+                
+                return () => {
+                    setHasMore(false);
+                    setThreads([]);
+                    setError(false);
+                    setLoading(true);
+                    setCurrentPage(1);
+                };
+            })
+            .catch((error) => {
+                console.log(error);
+                setError(true);
+            });
+    }, [currentPage, sort]);
+
+    const handleSelect = (selectedKey) => {
+        setSort(selectedKey);
+        setCurrentPage(1);
+        setThreads([]);
+    }
+    
+    return (
         <Container fluid className="thread-container">
-            <Nav className="mt-2"
+            {/*
+            <Nav variant="pills" className="justify-content-center mt-2"
                 activeKey={`${sort}`}
-                onSelect={(selectedKey) => setSort(selectedKey)}>
+                onSelect={(selectedKey) => handleSelect(selectedKey)}>
                 <Nav.Item>
                     <Nav.Link eventKey="new">New</Nav.Link>
                 </Nav.Item>
@@ -71,15 +163,26 @@ export default function ThreadList() {
                     <Nav.Link eventKey="old">Old</Nav.Link>
                 </Nav.Item>
             </Nav>
-            {threads.map((currentThread) => (
-                <Thread thread={currentThread} key={currentThread.id} />
-            ))}
+            */}
+            {threads.map((currentThread, index) => {
+                if (index + 1 === threads.length) {
+                    return <Thread thread={currentThread} key={currentThread.id} ref={lastThreadElementRef} />;
+                } else {
+                    return <Thread thread={currentThread} key={currentThread.id} />;
+                }
+            })}
+
+            <div>{loading && 'Loading...'}</div>
+            <div>{error && 'Error'}</div>
+
+            {/*
             <CustomPagination
                 currentPage={currentPage}
                 totalCount={totalCount}
                 pageSize={PageSize}
                 onPageChange={page => setCurrentPage(page)}
             />
+            */}
         </Container>
     );
 }
