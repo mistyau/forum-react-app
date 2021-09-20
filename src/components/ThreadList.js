@@ -17,7 +17,7 @@ function Tag({ tag, findTag }) {
     );  
 }
 
-const Thread = forwardRef(({ thread }, ref) => {
+const Thread = forwardRef(({ thread, toggleLike }, ref) => {
 
     useEffect(() => {
         if (!ref)
@@ -36,8 +36,8 @@ const Thread = forwardRef(({ thread }, ref) => {
                     <p>{thread.content}</p>
                     
                     <p className="text-muted">
-                        <IconContext.Provider value={{ className: 'heart-icon' }}>
-                            <AiFillHeart />
+                        <IconContext.Provider value={{ className: thread.userLiked ? 'heart-icon-liked' : 'heart-icon' }}>
+                            <AiFillHeart onClick={() => toggleLike(thread.userLiked, thread.id)} />
                         </IconContext.Provider> {thread.likes} likes &bull; { }
                         {getDateAgo(thread.createdAt)} ago
                     </p>
@@ -90,7 +90,7 @@ function Thread({ thread }) {
 
 let PageSize = 5;
 
-export default function ThreadList() {
+export default function ThreadList({ user }) {
 
     const [threads, setThreads] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -98,6 +98,8 @@ export default function ThreadList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [hasMore, setHasMore] = useState(false);
+
+    const history = useHistory();
 
     const observer = useRef();
     const lastThreadElementRef = useCallback(node => {
@@ -126,14 +128,6 @@ export default function ThreadList() {
                 
                 setHasMore(response.data.pageCount > 0);
                 setLoading(false);
-                
-                return () => {
-                    setHasMore(false);
-                    setThreads([]);
-                    setError(false);
-                    setLoading(true);
-                    setCurrentPage(1);
-                };
             })
             .catch((error) => {
                 console.log(error);
@@ -142,14 +136,62 @@ export default function ThreadList() {
     }, [currentPage, sort]);
 
     const handleSelect = (selectedKey) => {
-        setSort(selectedKey);
+        if (selectedKey !== sort) {
+            setThreads([]);
+        }
         setCurrentPage(1);
-        setThreads([]);
+        setSort(selectedKey);
+        setLoading(true);
+        setError(false);
     }
+
+    function toggleLike(userLiked, id) {
+        if (!user.token) {
+            history.push("/login");
+        } else if (userLiked) {
+            instance.delete(`/users/${user.username}/liked/${id}`)
+                .then(res => {
+                    console.log(res.data);
+                    setThreads(threads.map((currentThread) => {
+                        if (currentThread.id === id) {
+                            return {...currentThread, likes: currentThread.likes - 1, userLiked: false};
+                        } else {
+                            return currentThread;
+                        }
+                    }));
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        } else {
+            instance.post(`/users/${user.username}/threads/${id}/likes`)
+                .then(res => {
+                    console.log(res.data);
+                    setThreads(threads.map((currentThread) => {
+                        if (currentThread.id === id) {
+                            return {...currentThread, likes: currentThread.likes + 1, userLiked: true};
+                        } else {
+                            return currentThread;
+                        }
+                    }));
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    }
+
+    const threadList = threads.map((currentThread, index) => {
+        if (index + 1 === threads.length) {
+            return <Thread thread={currentThread} key={currentThread.id} toggleLike={toggleLike} ref={lastThreadElementRef} />;
+        } else {
+            return <Thread thread={currentThread} key={currentThread.id} toggleLike={toggleLike} />;
+        }
+    });
     
     return (
         <Container fluid className="thread-container">
-            {/*
+            
             <Nav variant="pills" className="justify-content-center mt-2"
                 activeKey={`${sort}`}
                 onSelect={(selectedKey) => handleSelect(selectedKey)}>
@@ -163,15 +205,8 @@ export default function ThreadList() {
                     <Nav.Link eventKey="old">Old</Nav.Link>
                 </Nav.Item>
             </Nav>
-            */}
-            {threads.map((currentThread, index) => {
-                if (index + 1 === threads.length) {
-                    return <Thread thread={currentThread} key={currentThread.id} ref={lastThreadElementRef} />;
-                } else {
-                    return <Thread thread={currentThread} key={currentThread.id} />;
-                }
-            })}
 
+            {threadList}
             <div>{loading && 'Loading...'}</div>
             <div>{error && 'Error'}</div>
 
