@@ -23,7 +23,7 @@ function App() {
         <NavBar user={token} />
         <Switch>
           <PublicRoute restricted={false} user={token} path="/" exact>
-            <Home />
+            <Home user={token} />
           </PublicRoute>
           <PublicRoute restricted={false} user={token} path="/thread/:id"> 
             <Thread user={token} />

@@ -1,10 +1,10 @@
 import ThreadList from "./ThreadList";
 
-export default function Home() {
+export default function Home({ user }) {
 
     return (
         <div className="homepage">
-            <ThreadList />
+            <ThreadList user={user} />
         </div>
         
     );
