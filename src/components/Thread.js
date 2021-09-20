@@ -65,7 +65,9 @@ export default function Thread({ user }) {
         if (user.token) {
             instance.get(`/users/${user.username}/threads/${id}/likes`)
                 .then(res => {
-                    if (res.data !== null) {
+                    if (res.status === 404) {
+                        setIsLiked(false);
+                    } else {
                         setIsLiked(true);
                     }
                 })
@@ -171,29 +173,10 @@ export default function Thread({ user }) {
         setShowDeleteModal(false);
     }
 
-    function likeThread() {
-        if (isLiked) {
-            return (
-                <p> yo oagkg</p>
-            );
-        }
-
-        instance.post(`/users/${user.username}/threads/${id}/likes`)
-            .then(res => {
-                console.log(res.data);
-                setIsLiked(res.data);
-                setThread({
-                    ...thread,
-                    likes: thread.likes + 1
-                });
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
-
     function toggleLike(isLiked) {
-        if (isLiked) {
+        if (!user.token) {
+            history.push("/login");
+        } else if (isLiked) {
             instance.delete(`/users/${user.username}/liked/${id}`)
                 .then(res => {
                     console.log(res.data);
