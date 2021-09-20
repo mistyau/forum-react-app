@@ -1,40 +1,40 @@
 import UserThreadList from "./UserThreadList";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
 import Container from 'react-bootstrap/Container';
-import { Nav } from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import SideBar from "./SideBar";
+import ThreadList from "./ThreadList";
 import { Route, Switch, useRouteMatch } from "react-router";
 import UserPostList from "./UserPostList";
 import PrivateRoute from "../PrivateRoute";
 
 export default function Dashboard({user}) {
-  let { path, url } = useRouteMatch();
+  let { path } = useRouteMatch();
 
   return (
-    <Container fluid>
-      <Container fluid className="thread-wrapper">
-        <Nav className="mb-3">
-          <Nav.Item>
-            <Nav.Link href={`${url}`}>Activity</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href={`${url}/threads`}>Threads</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href={`${url}/posts`}>Posts</Nav.Link>
-          </Nav.Item>
-        </Nav>
-
-        <Switch>
-          <Route exact path={path}>
-            Under Construction
-          </Route>
-          <PrivateRoute user={user} path={`${path}/threads`}>
-            <UserThreadList user={user} />
-          </PrivateRoute>
-          <PrivateRoute user={user} path={`${path}/posts`}>
-            <UserPostList user={user} />
-          </PrivateRoute>
-        </Switch>        
-      </Container>
+    <Container fluid className="homepage">
+      <Row>
+        <Col>
+          <SideBar user={user} />
+        </Col>
+        <Col xl={8}>
+          <Switch>
+            <Route exact path={path}>
+              <ThreadList user={user} />
+            </Route>
+            <PrivateRoute user={user} path={`${path}/threads`}>
+              <UserThreadList user={user} />
+            </PrivateRoute>
+            <PrivateRoute user={user} path={`${path}/posts`}>
+              <UserPostList user={user} />
+            </PrivateRoute>
+          </Switch>
+        </Col>
+        <Col>
+          <Button>Create new thread</Button>
+        </Col>
+      </Row>
     </Container>
   );
 }
