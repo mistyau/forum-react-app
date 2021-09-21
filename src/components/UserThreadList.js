@@ -8,6 +8,14 @@ import DeleteModal from "./DeleteModal";
 import { EditThreadModal } from "./EditModal";
 import { getDateAgo } from "../util";
 
+function Tag({ tag, findTag }) {
+    return (
+        <li className="tag" onClick={() => findTag(tag)}>
+            <span className="tag-title">{tag}</span>
+        </li>
+    );  
+}
+
 function Thread({ thread, displayEditModal, displayDeleteModal }) {
     return (
         <div className="thread-wrapper">
@@ -23,7 +31,12 @@ function Thread({ thread, displayEditModal, displayDeleteModal }) {
             </div>
 
             <p>{thread.content}</p>
-            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago</p>           
+            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago</p>
+            <ul id="tags">
+                {!thread.tags ? null : thread.tags.map((tag, index) => (
+                    <Tag tag={tag} key={index} />
+                ))}
+            </ul>
         </div>
     );
 };
