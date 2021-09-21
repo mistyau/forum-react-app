@@ -1,10 +1,16 @@
 import axios from 'axios';
 import qs from 'qs';
 
+const CancelToken = axios.CancelToken;
+export let cancel;
+
 // new instance of axios with custom config
 export const instance = axios.create({
     baseURL: 'http://localhost:8080/api/v1',
-    headers: {'Content-Type': 'application/json'}
+    headers: {'Content-Type': 'application/json'},
+    cancelToken: new CancelToken(function executor(c) {
+        cancel = c;
+    })
 });
 
 // request interceptor: set access token in header for every restricted request
@@ -26,6 +32,11 @@ instance.interceptors.response.use((response) => {
     return response;
 }, async function (error) {
     const originalRequest = error.config;
+
+    if (!error.response) {
+        cancel();
+        return Promise.reject(error);
+    }
 
     // if the refresh token is not valid either, then user needs to login again
     if (error.response.status === 400 && originalRequest.url === 'http://localhost:8080/api/v1/auth/refresh/token') {
