@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import Container from 'react-bootstrap/Container';
-import { instance } from "../services";
+import { instance, cancel } from "../services";
 import CustomPagination from "./CustomPagination";
 import { AiFillHeart } from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Nav from "react-bootstrap/Nav";
 import { useHistory } from "react-router";
 import { getDateAgo } from "../util";
+import axios from "axios";
 
 function Tag({ tag, findTag }) {
     return (
@@ -130,8 +131,15 @@ export default function ThreadList({ user }) {
                 setLoading(false);
             })
             .catch((error) => {
+                if (axios.isCancel(error)) {
+                    return;
+                }
                 console.log(error);
                 setError(true);
+            });
+
+            return (() => {
+                cancel();
             });
     }, [currentPage, sort]);
 
