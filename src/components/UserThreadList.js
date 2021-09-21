@@ -20,18 +20,18 @@ function Thread({ thread, displayEditModal, displayDeleteModal }) {
     return (
         <div className="thread-wrapper">
 
-            <div className="d-flex flex-row align-items-center mt-1 mb-1">
+            <div className="d-flex flex-row align-items-start mt-1 mb-1">
                 <h5><Link to={"/thread/" + thread.id}>
                     {thread.subject}
                 </Link></h5>
-                <div className="d-flex align-items-baseline ml-auto">
+                <div className="d-flex ml-auto">
                     <Button variant="outline-primary" className="mr-1" onClick={() => displayEditModal(thread.id, thread.subject, thread.content, thread.tags)}>Edit</Button>
                     <Button variant="outline-danger" onClick={() => displayDeleteModal(thread.id)}>Delete</Button>
                 </div>
             </div>
 
             <p>{thread.content}</p>
-            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago</p>
+            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago { } {thread.updatedAt ? ' • Edited at ' + thread.updatedAt : ''}</p>
             <ul id="tags">
                 {!thread.tags ? null : thread.tags.map((tag, index) => (
                     <Tag tag={tag} key={index} />
