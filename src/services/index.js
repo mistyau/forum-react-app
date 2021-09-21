@@ -1,23 +1,17 @@
 import axios from 'axios';
 import qs from 'qs';
 
-const CancelToken = axios.CancelToken;
-export let cancel;
-
 // new instance of axios with custom config
 export const instance = axios.create({
     baseURL: 'http://localhost:8080/api/v1',
-    headers: {'Content-Type': 'application/json'},
-    cancelToken: new CancelToken(function executor(c) {
-        cancel = c;
-    })
+    headers: {'Content-Type': 'application/json'}
 });
 
 // request interceptor: set access token in header for every restricted request
 instance.interceptors.request.use(
     config => {
         const token = JSON.parse(sessionStorage.getItem('token'));
-        if (token && config.url.includes('users')) {
+        if (token && (config.url.includes('users') || config.url.includes('threads?'))) {
             config.headers['Authorization'] = 'Bearer ' + token;
         }
         return config;
@@ -34,7 +28,6 @@ instance.interceptors.response.use((response) => {
     const originalRequest = error.config;
 
     if (!error.response) {
-        cancel();
         return Promise.reject(error);
     }
 
@@ -76,8 +69,8 @@ instance.interceptors.response.use((response) => {
             }
         });
     }
-
-    if (error.response.status === 404) {
+    
+    if (originalRequest.method === 'get' && error.response.status === 404) {   
         return error.response;
     }
 

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import Container from 'react-bootstrap/Container';
-import { instance, cancel } from "../services";
+import { instance } from "../services";
 import CustomPagination from "./CustomPagination";
 import { AiFillHeart } from "react-icons/ai";
 import { IconContext } from "react-icons";
@@ -121,7 +121,11 @@ export default function ThreadList({ user }) {
     useEffect(() => {
         setLoading(true);
         setError(false);
-        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=${sort}`)
+        const source = axios.CancelToken.source();
+        const cancelToken = source.token;
+        instance.get(`/threads?page=${currentPage - 1}&size=${PageSize}&sort=${sort}`, {
+            cancelToken
+        })
             .then((response) => {
                 setThreads(prevThreads => {
                     return [...prevThreads, ...response.data.threads];
@@ -132,6 +136,7 @@ export default function ThreadList({ user }) {
             })
             .catch((error) => {
                 if (axios.isCancel(error)) {
+                    console.log('Request cancelled ' + error.message);
                     return;
                 }
                 console.log(error);
@@ -139,7 +144,7 @@ export default function ThreadList({ user }) {
             });
 
             return (() => {
-                cancel();
+                source.cancel('cancel pweease');
             });
     }, [currentPage, sort]);
 
