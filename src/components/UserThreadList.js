@@ -6,22 +6,24 @@ import Col from 'react-bootstrap/Col';
 import { instance } from "../services";
 import DeleteModal from "./DeleteModal";
 import { EditThreadModal } from "./EditModal";
+import { getDateAgo } from "../util";
 
 function Thread({ thread, displayEditModal, displayDeleteModal }) {
     return (
-        <div>
-            <Row>
-                <Col>
-                    <Link to={"/thread/" + thread.id}>
-                        {thread.subject}
-                    </Link>
-                    <p><small className="text-muted">{thread.createdAt}</small></p>
-                </Col>
-                <Col className="d-flex align-items-baseline justify-content-end">
+        <div className="thread-wrapper">
+
+            <div className="d-flex flex-row align-items-center mt-1 mb-1">
+                <h5><Link to={"/thread/" + thread.id}>
+                    {thread.subject}
+                </Link></h5>
+                <div className="d-flex align-items-baseline ml-auto">
                     <Button variant="outline-primary" className="mr-1" onClick={() => displayEditModal(thread.id, thread.subject, thread.content, thread.tags)}>Edit</Button>
                     <Button variant="outline-danger" onClick={() => displayDeleteModal(thread.id)}>Delete</Button>
-                </Col>
-            </Row>
+                </div>
+            </div>
+
+            <p>{thread.content}</p>
+            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago</p>           
         </div>
     );
 };
@@ -108,7 +110,7 @@ export default function UserThreadList({ user }) {
 
     return (
         <div className="threads-container">
-            {!threads.length === 0 ? <p>No threads submitted yet.</p> :
+            {threads.length === 0 ? <p>No threads submitted yet.</p> :
             (threads.map((currentThread) => (
                 <Thread 
                     thread={currentThread} 
