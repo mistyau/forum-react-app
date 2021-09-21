@@ -5,12 +5,17 @@ import Container from 'react-bootstrap/Container';
 import Row from "react-bootstrap/Row";
 import SideBar from "./SideBar";
 import ThreadList from "./ThreadList";
-import { Route, Switch, useRouteMatch } from "react-router";
+import { useHistory, Route, Switch, useRouteMatch } from "react-router";
 import UserPostList from "./UserPostList";
 import PrivateRoute from "../PrivateRoute";
 
 export default function Dashboard({user}) {
   let { path } = useRouteMatch();
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push('/create');
+  }
 
   return (
     <Container fluid className="homepage">
@@ -32,7 +37,9 @@ export default function Dashboard({user}) {
           </Switch>
         </Col>
         <Col>
-          <Button>Create new thread</Button>
+          <div className="right-button">
+            <Button onClick={() => handleClick()}>Create new thread</Button>
+          </div>
         </Col>
       </Row>
     </Container>
