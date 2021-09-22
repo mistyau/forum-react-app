@@ -20,7 +20,7 @@ export default function SideBar({ user }) {
                 <Nav.Link eventKey={`${url}`}>Home</Nav.Link>
                 <Nav.Link eventKey={`${url}/threads`}>My Threads</Nav.Link>
                 <Nav.Link eventKey={`${url}/posts`}>My Posts</Nav.Link>
-                <Nav.Link eventKey="disabled" disabled>
+                <Nav.Link eventKey={`${url}/liked`}>
                     Liked Threads
                 </Nav.Link>
             </Nav>

@@ -7,6 +7,7 @@ import SideBar from "./SideBar";
 import ThreadList from "./ThreadList";
 import { useHistory, Route, Switch, useRouteMatch } from "react-router";
 import UserPostList from "./UserPostList";
+import LikedList from "./LikedList";
 import PrivateRoute from "../PrivateRoute";
 
 export default function Dashboard({user}) {
@@ -33,6 +34,9 @@ export default function Dashboard({user}) {
             </PrivateRoute>
             <PrivateRoute user={user} path={`${path}/posts`}>
               <UserPostList user={user} />
+            </PrivateRoute>
+            <PrivateRoute user={user} path={`${path}/liked`}>
+              <LikedList user={user} />
             </PrivateRoute>
           </Switch>
         </Col>
