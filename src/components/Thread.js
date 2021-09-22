@@ -190,7 +190,7 @@ export default function Thread({ user }) {
                     console.log(err);
                 });
         } else {
-            instance.post(`/users/${user.username}/threads/${id}/likes`)
+            instance.post(`/users/${user.username}/liked/${id}`)
                 .then(res => {
                     console.log(res.data);
                     setIsLiked(true);
