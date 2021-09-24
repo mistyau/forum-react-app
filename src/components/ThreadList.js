@@ -10,15 +10,20 @@ import { useHistory } from "react-router";
 import { getDateAgo } from "../util";
 import axios from "axios";
 
-function Tag({ tag, findTag }) {
+function Tag({ tag, findByTag }) {
     return (
-        <li className="tag" onClick={() => findTag(tag)}>
+        <li className="tag" onClick={() => findByTag(tag)}>
             <span className="tag-title">{tag}</span>
         </li>
     );  
 }
 
 const Thread = forwardRef(({ thread, toggleLike }, ref) => {
+    const history = useHistory();
+
+    const findByTag = (tag) => {
+        history.push(`/search?tagged=${tag}`);
+    }
 
     useEffect(() => {
         if (!ref)
@@ -44,7 +49,7 @@ const Thread = forwardRef(({ thread, toggleLike }, ref) => {
                     </p>
                     <ul id="tags">
                         {!thread.tags ? null : thread.tags.map((tag, index) => (
-                            <Tag tag={tag} key={index} />
+                            <Tag tag={tag} findByTag={findByTag} key={index} />
                         ))}
                     </ul>
                 </div>
