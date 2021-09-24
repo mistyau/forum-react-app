@@ -28,7 +28,7 @@ function App() {
           <PublicRoute restricted={false} user={token} path="/thread/:id"> 
             <Thread user={token} />
           </PublicRoute>
-          <PublicRoute restricted={false} user={token} path="/search/:parameters">
+          <PublicRoute restricted={false} user={token} path="/search">
             <SearchList />
           </PublicRoute>
           <PublicRoute restricted={true} user={token} path="/signup">

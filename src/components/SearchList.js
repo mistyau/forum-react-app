@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { instance } from "../services";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 function Thread({ thread }) {
@@ -14,19 +14,28 @@ function Thread({ thread }) {
     );
 }
 
-export default function SearchList() {
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
-    const [threads, setThreads] = useState(null);
-    const { parameters } = useParams();
+export default function SearchList() {
+    let query = useQuery();
+    const [parameters, setParameters] = useState(query.get("tagged"));
+    const [threads, setThreads] = useState([]);
 
     useEffect(() => {
-        instance.get(`/threads/search/${ parameters }`)
+        setParameters(query.get("tagged"));
+        console.log(parameters);
+    }, [query, parameters]);
+
+    useEffect(() => {
+        instance.get(`/threads?tagged=${parameters}`)
             .then(res => {
+                console.log(res.data);
                 setThreads(res.data);
             })
             .catch(err => {
                 console.log(err);
-                setThreads(null);
             });
     }, [parameters]);
 
