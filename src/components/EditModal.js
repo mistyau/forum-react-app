@@ -17,7 +17,8 @@ export function EditThreadModal({ show, handleClose, setSubject, setContent, set
                         <FormControl
                             aria-label="Thread Subject"
                             onChange={e => setSubject(e.target.value)}
-                            value={subject || ''} />
+                            value={subject || ''} 
+                            disabled />
                     </InputGroup>
                     <InputGroup>
                         <FormControl 
