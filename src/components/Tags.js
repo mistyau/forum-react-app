@@ -1,5 +1,4 @@
 import { FormControl, InputGroup } from "react-bootstrap";
-import "./Tags.css";
 
 function Tag({ tag, index, removeTag}) {
     return (
