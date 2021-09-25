@@ -1,6 +1,6 @@
 import './App.scss';
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Preferences from './components/Preferences';
 import Login from './components/Login';
@@ -13,6 +13,7 @@ import Thread from './components/Thread';
 import NavBar from './components/NavBar';
 import CreateThread from './components/CreateThreadForm';
 import SearchList from './components/SearchList';
+import NotFound from './components/NotFound';
 
 function App() {
   const { token, setToken } = useToken();
@@ -46,6 +47,9 @@ function App() {
           <PrivateRoute user={token} path="/preferences">
             <Preferences />
           </PrivateRoute>
+          <Route path="*">
+            <NotFound />
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>
