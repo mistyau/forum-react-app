@@ -146,10 +146,11 @@ export default function Thread({ user }) {
 
     function createPost() {
         const newPost = {
-            content: content
+            content: content,
+            threadId: id
         };
         
-        instance.post(`/users/${user.username}/threads/${id}/posts`, newPost)
+        instance.post(`/users/${user.username}/posts`, newPost)
             .then((response) => {
                 console.log(response.data);
                 setPosts([...posts, response.data]);
