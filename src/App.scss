@@ -18,7 +18,6 @@
   position: sticky;
   top: 20px;
   padding-top: 4em;
-  margin-right: 2em;
 }
 
 .dashboard-wrapper {
@@ -44,6 +43,29 @@ html {
   filter: drop-shadow(0 0 .75rem gray("800"));
 }
 
+.round-box {
+  background-color: white;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 3px gray("300"));
+  padding: 1em;
+}
+
+.tags-box {
+  margin: 0rem 1rem;
+}
+
+.tags-box h6 {
+  margin-top: .5rem;
+  padding-bottom: 1rem;
+  vertical-align: bottom;
+  text-align: center; 
+}
+
+.tags-box a {
+  color: black;
+  text-decoration: none;
+}
+
 .thread-wrapper {
   margin: 1em auto;
   padding: .5em 1em;
@@ -58,20 +80,56 @@ html {
 }
 
 .post-wrapper {
-  border-width: thin;
-  border-color: slategray;
-  border-bottom-style: solid;
+  margin: .5rem 0rem;
 }
 
-.post-wrapper p {
-  margin: 0rem;
-}
-
-.react-icons {
-  color: 'slate';
-  font-size: 1.3em;
+.edit-span {
   cursor: pointer;
-  vertical-align: sub;
+}
+
+.edit-span:hover {
+  color: theme-color("primary");
+}
+
+.delete-span {
+  cursor: pointer;
+}
+
+.delete-span:hover {
+  color: theme-color("danger");
+}
+
+.comment-icon {
+  font-size: 1em;
+  color: gray("500");
+  cursor: pointer;
+}
+
+.comment-icon:hover {
+  color: theme-color("primary");
+}
+
+.edit-icon {
+  font-size: 1.3rem;
+  margin-right: 2px;
+  color: gray("800");
+  cursor: pointer;
+  position: relative;
+  bottom: 1.5px;
+}
+
+.edit-icon:hover {
+  color: theme-color("info");
+}
+
+.delete-icon {
+  font-size: 1.5rem;
+  color: gray("800");
+  cursor: pointer;
+}
+
+.delete-icon:hover {
+  color: theme-color("danger");
 }
 
 .heart-icon {
