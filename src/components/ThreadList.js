@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import Container from 'react-bootstrap/Container';
 import { instance } from "../services";
-import CustomPagination from "./CustomPagination";
 import { AiFillHeart } from "react-icons/ai";
+import { MdModeComment } from "react-icons/md";
 import { IconContext } from "react-icons";
 import Nav from "react-bootstrap/Nav";
 import { useHistory } from "react-router";
@@ -42,6 +42,10 @@ const Thread = forwardRef(({ thread, toggleLike }, ref) => {
                     <p>{thread.content}</p>
                     
                     <p className="text-muted">
+                        <IconContext.Provider value={{ className: 'comment-icon' }}>
+                            <MdModeComment onClick={() => history.push(`/thread/${thread.id}`)} />
+                        </IconContext.Provider> {thread.comments} comments &bull; { }
+                    
                         <IconContext.Provider value={{ className: thread.userLiked ? 'heart-icon-liked' : 'heart-icon' }}>
                             <AiFillHeart onClick={() => toggleLike(thread.userLiked, thread.id)} />
                         </IconContext.Provider> {thread.likes} likes &bull; { }
