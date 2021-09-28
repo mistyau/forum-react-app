@@ -9,6 +9,7 @@ import { useHistory, Route, Switch, useRouteMatch } from "react-router";
 import UserPostList from "./UserPostList";
 import LikedList from "./LikedList";
 import PrivateRoute from "../PrivateRoute";
+import TopTagsList from "./TopTagsList";
 
 export default function Dashboard({user}) {
   let { path } = useRouteMatch();
