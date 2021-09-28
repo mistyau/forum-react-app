@@ -1,28 +1,36 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import DeleteModal from "./DeleteModal";
 import EditPostModal from "./EditModal";
 import { instance } from "../services";
+import { getDateAgo } from '../util';
 
 function Post({ post, displayEditModal, displayDeleteModal }) {
     return (
-        <div className="threadWrapper">
+        <Container className="thread-wrapper">
             <Row>
                 <Col>
-                    <Link to={"/post/" + post.id}>
-                        {post.content}
-                    </Link>
-                    <p><small className="text-muted">{post.createdAt}</small></p>
+                    <b><Link to={"/thread/" + post.threadId}>
+                        {post.threadSubject}
+                    </Link></b>
+                    
                 </Col>
-                <Col className="d-flex align-items-baseline justify-content-end">
+                <Col xs={{ order: 1 }} lg={2} className="d-flex align-items-baseline justify-content-end">
                     <Button variant="outline-info" className="mr-1" onClick={() => displayEditModal(post.id, post.content)}>Edit</Button>
                     <Button variant="outline-danger" onClick={() => displayDeleteModal(post.id)}>Delete</Button>
                 </Col>
             </Row>
-        </div>
+            <Row>
+                <Col md="auto">
+                    <p>{post.content}</p>
+                    <p className="text-muted">{getDateAgo(post.createdAt)} ago {post.updatedAt ? '• Edited ' + post.updatedAt : ''}</p>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
