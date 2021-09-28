@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -8,6 +7,8 @@ import DeleteModal from "./DeleteModal";
 import EditPostModal from "./EditModal";
 import { instance } from "../services";
 import { getDateAgo } from '../util';
+import { FiEdit } from "react-icons/fi";
+import { AiOutlineDelete } from "react-icons/ai";
 
 function Post({ post, displayEditModal, displayDeleteModal }) {
     return (
@@ -20,8 +21,8 @@ function Post({ post, displayEditModal, displayDeleteModal }) {
                     
                 </Col>
                 <Col xs={{ order: 1 }} lg={2} className="d-flex align-items-baseline justify-content-end">
-                    <Button variant="outline-info" className="mr-1" onClick={() => displayEditModal(post.id, post.content)}>Edit</Button>
-                    <Button variant="outline-danger" onClick={() => displayDeleteModal(post.id)}>Delete</Button>
+                    <FiEdit className="edit-icon" onClick={() => displayEditModal(post.id, post.content)} />
+                    <AiOutlineDelete className="delete-icon" onClick={() => displayDeleteModal(post.id)} />
                 </Col>
             </Row>
             <Row>
