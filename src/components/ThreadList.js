@@ -137,7 +137,7 @@ export default function ThreadList({ user }) {
         })
             .then((response) => {
                 setThreads(prevThreads => {
-                    return [...prevThreads, ...response.data.threads];
+                    return [...new Set([...prevThreads, ...response.data.threads])];
                 });
                 
                 setHasMore(response.data.pageCount > 0);
