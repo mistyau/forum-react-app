@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Container from "react-bootstrap/Container";
 import { instance } from "../services";
 import DeleteModal from "./DeleteModal";
 import { EditThreadModal } from "./EditModal";
 import { getDateAgo } from "../util";
+import { FiEdit } from "react-icons/fi";
+import { AiOutlineDelete } from "react-icons/ai";
 
 function Tag({ tag, findTag }) {
     return (
@@ -18,26 +20,30 @@ function Tag({ tag, findTag }) {
 
 function Thread({ thread, displayEditModal, displayDeleteModal }) {
     return (
-        <div className="thread-wrapper">
-
-            <div className="d-flex flex-row align-items-start mt-1 mb-1">
-                <h5><Link to={"/thread/" + thread.id}>
-                    {thread.subject}
-                </Link></h5>
-                <div className="d-flex ml-auto">
-                    <Button variant="outline-primary" className="mr-1" onClick={() => displayEditModal(thread.id, thread.subject, thread.content, thread.tags)}>Edit</Button>
-                    <Button variant="outline-danger" onClick={() => displayDeleteModal(thread.id)}>Delete</Button>
-                </div>
-            </div>
-
-            <p>{thread.content}</p>
-            <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago { } {thread.updatedAt ? ' • Edited at ' + thread.updatedAt : ''}</p>
-            <ul id="tags">
-                {!thread.tags ? null : thread.tags.map((tag, index) => (
-                    <Tag tag={tag} key={index} />
-                ))}
-            </ul>
-        </div>
+        <Container className="thread-wrapper">
+            <Row>
+                <Col>
+                    <h5><Link to={"/thread/" + thread.id}>
+                        {thread.subject}
+                    </Link></h5>
+                </Col>
+                <Col xs={{ order: 1 }} lg={1} className="d-flex align-items-baseline justify-content-end">
+                    <FiEdit className="edit-icon" onClick={() => displayEditModal(thread.id, thread.subject, thread.content, thread.tags)} />
+                    <AiOutlineDelete className="delete-icon" onClick={() => displayDeleteModal(thread.id)} />
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <p>{thread.content}</p>
+                    <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago { } {thread.updatedAt ? ' • Edited at ' + thread.updatedAt : ''}</p>
+                    <ul id="tags">
+                        {!thread.tags ? null : thread.tags.map((tag, index) => (
+                            <Tag tag={tag} key={index} />
+                        ))}
+                    </ul>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
