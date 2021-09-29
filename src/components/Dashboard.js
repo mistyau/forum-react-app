@@ -21,7 +21,12 @@ export default function Dashboard({user}) {
 
   return (
     <Container fluid className="homepage">
-      <Row>
+      <Row className="justify-content-center">
+        <Col lg={{ order: 12 }}>
+          <div className="right-button">
+            <Button onClick={() => handleClick()}>Create new thread</Button>
+          </div>
+        </Col>
         <Col>
           <SideBar user={user} />
         </Col>
@@ -40,11 +45,6 @@ export default function Dashboard({user}) {
               <LikedList user={user} />
             </PrivateRoute>
           </Switch>
-        </Col>
-        <Col>
-          <div className="right-button">
-            <Button onClick={() => handleClick()}>Create new thread</Button>
-          </div>
         </Col>
       </Row>
     </Container>
