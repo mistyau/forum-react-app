@@ -9,7 +9,7 @@ import axios from "axios";
 function Like({ like, unlike }) {
     return (
         <div className="thread-wrapper">
-            <p>{like.threadAuthor}</p>
+            <p><b>{like.threadAuthor}</b></p>
             <Link to={`/thread/${like.threadId}`}>
                 <h6>{like.threadSubject}</h6>
             </Link>
