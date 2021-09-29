@@ -20,7 +20,7 @@ function Post({ post, displayEditModal, displayDeleteModal }) {
                     </Link></b>
                     
                 </Col>
-                <Col xs={{ order: 1 }} lg={2} className="d-flex align-items-baseline justify-content-end">
+                <Col xs={{ order: 1 }} lg={1} className="d-flex align-items-baseline justify-content-end">
                     <FiEdit className="edit-icon" onClick={() => displayEditModal(post.id, post.content)} />
                     <AiOutlineDelete className="delete-icon" onClick={() => displayDeleteModal(post.id)} />
                 </Col>
