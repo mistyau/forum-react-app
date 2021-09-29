@@ -4,6 +4,7 @@ import { getDateAgo } from "../util";
 import { AiFillHeart } from "react-icons/ai";
 import { IconContext } from "react-icons/lib";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Like({ like, unlike }) {
     return (
@@ -27,15 +28,27 @@ export default function LikedList({ user }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        instance.get(`/users/${user.username}/liked`)
+        const source = axios.CancelToken.source();
+        const cancelToken = source.token;
+        instance.get(`/users/${user.username}/liked`, {
+            cancelToken
+        })
             .then((res) => {
                 console.log(res.data);
                 setLikes(res.data);
             })
             .catch((err) => {
+                if (axios.isCancel(err)) {
+                    console.log('Request cancelled ' + err.message);
+                    return;
+                }
                 console.log(err);
                 setError(err);
             });
+        
+        return (() => {
+            source.cancel('personally cancelled');
+        });
     }, [user.username]);
 
     function unlike(threadId) {
