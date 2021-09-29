@@ -1,11 +1,17 @@
+import { useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useHistory, useLocation, useRouteMatch } from 'react-router';
 
 export default function SideBar({ user }) {
     const { url } = useRouteMatch();
     const history = useHistory();
+    let location = useLocation();
+    const [key, setKey] = useState(`${location.pathname}`);
+
+    console.log(location.pathname);
 
     const handleSelect = (selectedKey) => {
+        setKey(selectedKey);
         history.push(selectedKey);
     }
 
@@ -14,6 +20,7 @@ export default function SideBar({ user }) {
             <Nav 
                 variant="pills" 
                 defaultActiveKey={`${url}`}
+                activeKey={key}
                 onSelect={(selectedKey) => {handleSelect(selectedKey)}}
                 className="flex-sm-column"
             >
