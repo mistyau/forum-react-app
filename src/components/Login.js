@@ -6,6 +6,8 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import { useEffect } from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 function Panic({ error }) {
     if (error) {
@@ -65,41 +67,49 @@ export default function Login({ setToken }) {
         return () => {
             setValidated(false);
         };
-    }, []);
+    }, []); // empty dependency array means I want to run an effect and clean it up once
+            // ..(on mount and unmount)
+            // ..https://reactjs.org/docs/hooks-reference.html#useeffect
 
     return (
-        <Container className="login-wrapper">
-            <Panic error={error} />
-            <h1>Log In</h1>
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                <Form.Group controlId="formBasicUsername">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control 
-                        required
-                        type="text" 
-                        placeholder="Enter username" 
-                        onChange={e => setUserName(e.target.value)} />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter a username.
-                        </Form.Control.Feedback>
-                </Form.Group>
+        <Container>
+            <Row className="justify-content-center">
+                <Col lg={4}>
+                    <div className="round-box">
+                        <Panic error={error} />
+                        <h1>Log In</h1>
+                        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                            <Form.Group controlId="formBasicUsername">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="Enter username"
+                                    onChange={e => setUserName(e.target.value)} />
+                                <Form.Control.Feedback type="invalid">
+                                    Please enter a username.
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        required 
-                        type="password" 
-                        placeholder="Password" 
-                        onChange={e => setPassword(e.target.value)} />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter a password.
-                        </Form.Control.Feedback>
-                </Form.Group>
-                <Button variant="primary" type="submit" block>Submit</Button>
-                <Form.Text id="loginHelpInline" muted>
-                    Don't have an account? <a href="/signup">Sign up here.</a>
-                </Form.Text>
-            </Form>
+                            <Form.Group controlId="formBasicPassword">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                    required
+                                    type="password"
+                                    placeholder="Password"
+                                    onChange={e => setPassword(e.target.value)} />
+                                <Form.Control.Feedback type="invalid">
+                                    Please enter a password.
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Button variant="primary" type="submit" block>Submit</Button>
+                            <Form.Text id="loginHelpInline" muted>
+                                Don't have an account? <a href="/signup">Sign up here.</a>
+                            </Form.Text>
+                        </Form>
+                    </div>
+                </Col>
+            </Row>
         </Container>
     )
 }
