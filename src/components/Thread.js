@@ -14,27 +14,33 @@ import { getDateAgo } from "../util";
 function Post({ user, post, displayEditModal, displayDeleteModal }) {
     return (
         <div className="post-wrapper">
-            <p>{ post.content }</p>
-            <small>{ post.author }</small>
-            <small className="text-muted"> at { post.createdAt }</small>
 
+            <b>{post.author}</b>
+            <p>{post.content}</p>
+
+            <small className="text-muted">{getDateAgo(post.createdAt)} ago</small>
+
+            <span>
+                <small className="text-muted">{post.updatedAt ? ' Edited ' + post.updatedAt : '' }</small>
+            </span>
+            
             {user.username === post.author ?
             <span>
-                <IconContext.Provider value={{ className: "react-icons" }}>
-                    <BsPencil onClick={() => displayEditModal(post.id, post.content)} />
-                </IconContext.Provider>
-                <IconContext.Provider value={{ className: "react-icons" }}>
-                    <BsX onClick={() => displayDeleteModal(post.id)} />
-                </IconContext.Provider>
+                <span className="edit-span" onClick={() => displayEditModal(post.id, post.content)}>
+                    <small> Edit </small>
+                </span>
+                <span className="delete-span" onClick={() => displayDeleteModal(post.id)}>
+                    <small>Delete</small>
+                </span>
             </span> : null}
             
         </div>
     );
 }
 
-function Tag({ tag}) {
+function Tag({ tag, findByTag }) {
     return (
-        <li className="tag">
+        <li className="tag" onClick={() => findByTag(tag)}>
             <span className="tag-title">{tag}</span>
         </li>
     );  
@@ -132,7 +138,7 @@ export default function Thread({ user }) {
                 console.log(response.data);
                 setPosts(posts.map(post => {
                     if (post.id === id) {
-                        return {...post, content: content};
+                        return {...post, content: content, updatedAt: 'just now'};
                     } else {
                         return post;
                     }
@@ -206,8 +212,12 @@ export default function Thread({ user }) {
         }
     }
 
+    function findByTag(tag) {
+        history.push(`/search?tagged=${tag}`);
+    }
+
     return (
-        <Container fluid className="thread-container">
+        <Container fluid>
             <div className="thread-wrapper">
                 <p><b>{thread.author}</b></p>
                 <h3 className="mb-3">{thread.subject}</h3>
@@ -220,7 +230,7 @@ export default function Thread({ user }) {
                 </p>
                 <ul id="tags">
                     {!thread.tags ? null : thread.tags.map((tag, index) => (
-                        <Tag tag={tag} key={index} />
+                        <Tag tag={tag} findByTag={findByTag} key={index} />
                     ))}
                 </ul>
             </div>
