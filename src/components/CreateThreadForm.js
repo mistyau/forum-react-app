@@ -7,6 +7,7 @@ import Tags from "./Tags";
 import { useState } from "react";
 import { instance } from "../services";
 import { useHistory } from "react-router";
+import { Row, Col } from "react-bootstrap";
 
 const formReducer = (state, event) => {
 
@@ -58,39 +59,44 @@ export default function CreateThread({ user }) {
     }
 
     return (
-        <Container fluid>
-            <div className="thread-wrapper">
-                <h3>Create New Thread</h3>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Form.Group>
-                        <Form.Control
-                            required
-                            name="subject"
-                            placeholder="Subject"
-                            aria-label="Subject"
-                            aria-describedby="basic-addon1"
-                            onChange={handleChange}
-                            value={formData.subject || ''}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            Subject cannot be blank.
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Control
-                            as="textarea"
-                            name="content"
-                            placeholder="Content"
-                            aria-label="Content"
-                            aria-describedby="basic-addon1"
-                            onChange={handleChange}
-                            value={formData.content || ''}
-                        />
-                    </Form.Group>
-                    <Tags tags={tags} setTags={setTags} />
-                    <Button variant="primary" type="button" onClick={handleSubmit}>Submit</Button>
-                </Form>
-            </div>
+        <Container>
+            <Row className="justify-content-center">
+                <Col lg={6}>
+                    <div className="round-box">
+                    <h3>Create New Thread</h3>
+                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        <Form.Group>
+                            <Form.Control
+                                required
+                                name="subject"
+                                placeholder="Subject"
+                                aria-label="Subject"
+                                aria-describedby="basic-addon1"
+                                onChange={handleChange}
+                                value={formData.subject || ''}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                Subject cannot be blank.
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Control
+                                as="textarea"
+                                rows="4"
+                                name="content"
+                                placeholder="Content"
+                                aria-label="Content"
+                                aria-describedby="basic-addon1"
+                                onChange={handleChange}
+                                value={formData.content || ''}
+                            />
+                        </Form.Group>
+                        <Tags tags={tags} setTags={setTags} />
+                        <Button variant="primary" type="button" onClick={handleSubmit}>Submit</Button>
+                    </Form>
+                    </div>
+                </Col>
+            </Row>
         </Container>
     );
 }
