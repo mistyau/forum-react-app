@@ -4,37 +4,28 @@ import './Login.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
 import { useEffect } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-
-function Panic({ error }) {
-    if (error) {
-        return (
-            <Alert variant="danger">
-                <Alert.Heading>AAAAAHHHHH</Alert.Heading>
-                <p>Do not be scared. Error: {error}.</p>
-            </Alert>
-        );
-    }
-    return null;
-}
+import { instance } from '../services';
+import CustomAlertDismissable from './CustomAlert';
 
 async function loginUser(credentials) {
-    return fetch('http://localhost:8080/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(result => result.json())
-        .catch((error) => {
-            console.log(error);
-            return null;
-        })
-        //.then(data => data.token)
+
+    return instance.post('/auth/login', {
+        username: credentials.username,
+        password: credentials.password
+    }).then((res) => {
+        //console.log(res.data);
+        return res.data;
+    }).catch((error) => {
+        //console.log(error.response);
+        if (error.response.status === 500) {
+            throw new Error('Server error');
+        } else {
+            throw new Error('Username/password is invalid');
+        } 
+    });
 }
 
 export default function Login({ setToken }) {
@@ -43,6 +34,7 @@ export default function Login({ setToken }) {
     const [password, setPassword] = useState();
     const [validated, setValidated] = useState(false);
     const [error, setError] = useState(null);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const handleSubmit = async e => {
         const form = e.currentTarget;
@@ -54,12 +46,17 @@ export default function Login({ setToken }) {
         setValidated(true);
 
         e.preventDefault();
-        const token = await loginUser({
-            username,
-            password
-        });
 
-        token === null ? setError('Username/password is invalid') : setToken(token);         
+        try {
+            const token = await loginUser({
+                username,
+                password
+            });
+            setToken(token);
+        } catch (e) {
+            setError(e.message);
+            setShowErrorAlert(true);
+        }
     }
 
     useEffect(() => {
@@ -76,7 +73,12 @@ export default function Login({ setToken }) {
             <Row className="justify-content-center">
                 <Col lg={4}>
                     <div className="round-box">
-                        <Panic error={error} />
+                        <CustomAlertDismissable 
+                            show={showErrorAlert} 
+                            variant={"danger"} 
+                            message={error}
+                            setShow={setShowErrorAlert}
+                            heading={"Error"} />
                         <h1>Log In</h1>
                         <Form noValidate validated={validated} onSubmit={handleSubmit}>
                             <Form.Group controlId="formBasicUsername">
