@@ -10,6 +10,7 @@ import { instance } from "../services";
 import DeleteModal from "./DeleteModal";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { getDateAgo } from "../util";
+import CustomAlertDismissable from "./CustomAlert";
 
 function Post({ user, post, displayEditModal, displayDeleteModal }) {
     return (
@@ -55,6 +56,8 @@ export default function Thread({ user }) {
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
     const [isLiked, setIsLiked] = useState(false);
+    const [error, setError] = useState(false);
+    const [showError, setShowError] = useState(false);
 
     const { id } = useParams();
     const history = useHistory();
@@ -145,6 +148,8 @@ export default function Thread({ user }) {
                 }));
             }).catch((error) => {
                 console.log(error);
+                setError(error.response.data);
+                setShowError(true);
             })
 
         setShowEditModal(false);
@@ -162,6 +167,8 @@ export default function Thread({ user }) {
                 setPosts([...posts, response.data]);
             }).catch((error) => {
                 console.log(error);
+                setError(error.response.data);
+                setShowError(true);
             })
 
         setShowCreateModal(false);
@@ -175,6 +182,8 @@ export default function Thread({ user }) {
             })
             .catch(err => {
                 console.log(err);
+                setError(err.response.data);
+                setShowError(true);
             })
 
         setShowDeleteModal(false);
@@ -237,6 +246,12 @@ export default function Thread({ user }) {
             <div className="thread-bar">
                 <Button variant="primary" onClick={() => displayCreateModal()}>Reply</Button>
             </div>
+            <CustomAlertDismissable 
+                show={showError}
+                setShow={setShowError}
+                variant={"danger"}
+                heading={"Error"}
+                message={error} />
             <div className="thread-wrapper">
                 {posts.length === 0 ? <p>No posts yet...</p> :
                 posts.map((currentPost) => (
