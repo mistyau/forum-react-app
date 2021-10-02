@@ -55,6 +55,8 @@ export default function UserThreadList({ user }) {
     const [subject, setSubject] = useState(null);
     const [content, setContent] = useState(null);
     const [tags, setTags] = useState([]);
+    const [showError, setShowError] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         let isMounted = true;
@@ -94,6 +96,8 @@ export default function UserThreadList({ user }) {
                 console.log(response.data);
             }).catch((error) => {
                 console.log(error);
+                setError(error.response.data);
+                setShowError(true);
             });
 
         setShowDeleteConfirmation(false);
@@ -122,6 +126,8 @@ export default function UserThreadList({ user }) {
             console.log(response);
         }).catch(error => {
             console.log(error);
+            setError(error.response.data);
+            setShowError(true);
         });
 
         setShowEditModal(false);
