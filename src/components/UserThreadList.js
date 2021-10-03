@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -9,16 +9,10 @@ import { EditThreadModal } from "./EditModal";
 import { getDateAgo } from "../util";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
+import CustomAlertDismissable from "./CustomAlert";
+import { TagClickable } from "./Tags";
 
-function Tag({ tag, findTag }) {
-    return (
-        <li className="tag" onClick={() => findTag(tag)}>
-            <span className="tag-title">{tag}</span>
-        </li>
-    );  
-}
-
-function Thread({ thread, displayEditModal, displayDeleteModal }) {
+function Thread({ thread, displayEditModal, displayDeleteModal, findTag }) {
     return (
         <Container className="thread-wrapper">
             <Row>
@@ -35,10 +29,10 @@ function Thread({ thread, displayEditModal, displayDeleteModal }) {
             <Row>
                 <Col>
                     <p>{thread.content}</p>
-                    <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago { } {thread.updatedAt ? ' • Edited at ' + thread.updatedAt : ''}</p>
+                    <p className="text-muted">{thread.likes} likes &bull; { } {getDateAgo(thread.createdAt)} ago { } {thread.updatedAt ? ' • Edited ' + thread.updatedAt : ''}</p>
                     <ul id="tags">
                         {!thread.tags ? null : thread.tags.map((tag, index) => (
-                            <Tag tag={tag} key={index} />
+                            <TagClickable tag={tag} findTag={findTag} key={index} />
                         ))}
                     </ul>
                 </Col>
@@ -48,7 +42,7 @@ function Thread({ thread, displayEditModal, displayDeleteModal }) {
 };
 
 export default function UserThreadList({ user }) {
-    const [threads, setThreads] = useState(null);
+    const [threads, setThreads] = useState([]);
     const [id, setId] = useState(null);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -57,28 +51,27 @@ export default function UserThreadList({ user }) {
     const [tags, setTags] = useState([]);
     const [showError, setShowError] = useState(false);
     const [error, setError] = useState(null);
+    const history = useHistory();
 
     useEffect(() => {
-        let isMounted = true;
-
         instance.get(`/users/${user.username}/threads`)
             .then((response) => {
-                if (isMounted) {
-                    setThreads(response.data);
-                }
+                setThreads(response.data);
             }).catch(error => {
                 console.log(error);
-            })
-
-        // cleanup function
-        return () => {
-            isMounted = false;
-        };
+                if (!error.response) {
+                    setError('Server error');
+                } else {
+                    setError(error.response.data);
+                }
+                
+                setShowError(true);
+            });
         
-    });
+    }, [user.username]);
 
-    if (!threads) {
-        return null;
+    function findTag(tag) {
+        history.push(`/search?tagged=${tag}`);
     }
 
     const displayDeleteModal = (id) => {
@@ -94,9 +87,15 @@ export default function UserThreadList({ user }) {
         instance.delete(`/users/${user.username}/threads/${id}`)
             .then((response) => {
                 console.log(response.data);
+                setThreads([...threads.filter(el => el.id !== id)]);
             }).catch((error) => {
                 console.log(error);
-                setError(error.response.data);
+                if (!error.response) {
+                    setError('Could not connect to the server.')
+                } else {
+                    setError(error.response.data);
+                }
+                
                 setShowError(true);
             });
 
@@ -124,9 +123,21 @@ export default function UserThreadList({ user }) {
         instance.put(`/users/${user.username}/threads/${id}`, editedThread)
         .then(response => {
             console.log(response);
+            setThreads(threads.map(thread => {
+                if (thread.id === id) {
+                    return {...thread, subject: subject, content: content, tags: tags, updatedAt: 'just now'};
+                } else {
+                    return thread;
+                }
+            }));
         }).catch(error => {
             console.log(error);
-            setError(error.response.data);
+            if (!error.response) {
+                setError('Could not connect to server. :(')
+            } else {
+                setError(error.response.data);
+            }
+            
             setShowError(true);
         });
 
@@ -135,12 +146,19 @@ export default function UserThreadList({ user }) {
 
     return (
         <div className="threads-container">
+            <CustomAlertDismissable
+                message={error}
+                heading={"Error"}
+                show={showError}
+                setShow={setShowError}
+                variant={"danger"} />
             {threads.length === 0 ? <p>No threads submitted yet.</p> :
             (threads.map((currentThread) => (
                 <Thread 
                     thread={currentThread} 
                     displayDeleteModal={displayDeleteModal}
                     displayEditModal={displayEditModal} 
+                    findTag={findTag}
                     key={currentThread.id}/>
             )))}
             <EditThreadModal 
