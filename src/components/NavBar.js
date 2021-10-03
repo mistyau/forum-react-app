@@ -33,7 +33,7 @@ export default function NavBar({ user }){
                             Signed in as: <a href="/dashboard">{user.username}</a>
                         </Navbar.Text>
                     </Nav>
-                    <Button variant="outline-success" onClick={logout}>Log Out</Button>
+                    <Button variant="danger" onClick={logout}>Log Out</Button>
                 </Navbar.Collapse>
             </Navbar>
         );
@@ -48,7 +48,7 @@ export default function NavBar({ user }){
                     <Nav.Link href="/">Home</Nav.Link>
                 </Nav>
                 <Search />
-                <Button variant="outline-success" onClick={handleClick}>Login</Button>
+                <Button variant="success" onClick={handleClick}>Login</Button>
             </Navbar.Collapse>
         </Navbar>
     );
