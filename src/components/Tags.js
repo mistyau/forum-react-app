@@ -9,6 +9,14 @@ function Tag({ tag, index, removeTag}) {
     );  
 }
 
+export function TagClickable({ tag, findTag }) {
+    return (
+        <li className="tag" onClick={() => findTag(tag)}>
+            <span className="tag-title">{tag}</span>
+        </li>
+    );  
+}
+ 
 export default function Tags({tags, setTags}) {
 
     const removeTag = (id) => {
