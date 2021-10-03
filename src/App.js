@@ -14,6 +14,7 @@ import NavBar from './components/NavBar';
 import CreateThread from './components/CreateThreadForm';
 import SearchList from './components/SearchList';
 import NotFound from './components/NotFound';
+import Footer from './components/Footer';
 
 function App() {
   const { token, setToken } = useToken();
@@ -52,6 +53,7 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
+      <Footer />
     </div>
   );
 }
