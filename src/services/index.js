@@ -11,7 +11,7 @@ export const instance = axios.create({
 instance.interceptors.request.use(
     config => {
         const token = JSON.parse(sessionStorage.getItem('token'));
-        if (token && (config.url.includes('users') || config.url.includes('threads?'))) {
+        if (token && (config.url.includes('users') || config.url.includes('threads?page'))) {
             config.headers['Authorization'] = 'Bearer ' + token;
         }
         return config;
@@ -28,6 +28,10 @@ instance.interceptors.response.use((response) => {
     const originalRequest = error.config;
 
     if (!error.response) {
+        return Promise.reject(error);
+    }
+
+    if (originalRequest.url.includes('auth')) {
         return Promise.reject(error);
     }
 
