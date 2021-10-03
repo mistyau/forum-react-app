@@ -9,6 +9,7 @@ import { instance } from "../services";
 import { getDateAgo } from '../util';
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
+import CustomAlertDismissable from "./CustomAlert";
 
 function Post({ post, displayEditModal, displayDeleteModal }) {
     return (
@@ -36,33 +37,30 @@ function Post({ post, displayEditModal, displayDeleteModal }) {
 };
 
 export default function UserPostList({ user }) {
-    const [posts, setPosts] = useState(null);
+    const [posts, setPosts] = useState([]);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [content, setContent] = useState(null);
     const [postId, setPostId] = useState(null);
+    const [error, setError] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
-
         instance.get(`/users/${user.username}/posts`)
         .then((response) => {
-            if (isMounted) {
-                setPosts(response.data);
-            }
+            setShowAlert(false);
+            setPosts(response.data);
         }).catch(error => {
             console.log(error);
-        })
+            if (!error.response) {
+                setError('Server error. Could not retrieve posts.');
+            } else {
+                setError(error.response.data);
+            }
 
-        // cleanup function
-        return () => {
-            isMounted = false;
-        };
-    });
-
-    if (!posts) {
-        return null;
-    }
+            setShowAlert(true);
+        });
+    }, [user.username]);
 
     const displayDeleteModal = (id) => {
         setPostId(id);
@@ -77,8 +75,17 @@ export default function UserPostList({ user }) {
         instance.delete(`/users/${user.username}/posts/${id}`)
         .then((response) => {
             console.log(response.data);
+            setShowAlert(false);
+            setPosts([...posts.filter(el => el.id !== id)]);
         }).catch((error) => {
             console.log(error);
+            if (error.response) {
+                setError('Server error');
+            } else {
+                setError(error.response.data);
+            }
+
+            setShowAlert(true);
         })
 
         setShowDeleteConfirmation(false);
@@ -102,16 +109,37 @@ export default function UserPostList({ user }) {
         instance.put(`/users/${user.username}/posts/${id}`, editedPost)
         .then((response) => {
             console.log(response);
+            setShowAlert(false);
+            setPosts(posts.map(post => {
+                if (post.id === id) {
+                    return {...post, content: content, updatedAt: 'just now'};
+                } else {
+                    return post;
+                }
+            }));
         }).catch((error) => {
             console.log(error);
+            if (!error.response) {
+                setError('Could not connect to server');
+            } else {
+                setError(error.response.data);
+            }
+
+            setShowAlert(true);
         });
 
         setShowEditModal(false);
     }
 
     return (
-        <div className="threads-container">
-            {posts.length === 0 ? <p>No posts submitted yet.</p> : 
+        <Container>
+            <CustomAlertDismissable
+                show={showAlert}
+                setShow={setShowAlert}
+                variant={"danger"}
+                heading={"Error"}
+                message={error} />
+            {posts.length === 0 ? <p>No posts found.</p> : 
             (posts.map((currentPost) => (
                 <Post 
                     post={currentPost} 
@@ -133,6 +161,6 @@ export default function UserPostList({ user }) {
                 handleDelete={deletePost} 
                 message={"Are you sure you want to delete this post? This action is permanent and cannot be undone."}
                 id={postId} />
-        </div>
+        </Container>
     )
 }
