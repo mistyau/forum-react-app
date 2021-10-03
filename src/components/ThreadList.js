@@ -6,6 +6,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { MdModeComment } from "react-icons/md";
 import { IconContext } from "react-icons";
 import Nav from "react-bootstrap/Nav";
+import Spinner from "react-bootstrap/Spinner";
 import { useHistory } from "react-router";
 import { getDateAgo } from "../util";
 import axios from "axios";
@@ -61,42 +62,6 @@ const Thread = forwardRef(({ thread, toggleLike }, ref) => {
         </div>
     );
 });
-
-/*
-function Thread({ thread }) {
-    const history = useHistory();
-
-    const findTag = (tag) => {
-        history.push(`/search/${tag}`);
-    }
-
-    return (
-        <div className="thread-wrapper">
-            <div className="d-flex flex-row">
-                <div className="d-flex flex-column">
-                    <p><b>{thread.author}</b></p>
-                    <h5><Link to={"/thread/" + thread.id}>
-                        {thread.subject}
-                    </Link></h5>
-                    <p>{thread.content}</p>
-                    
-                    <p className="text-muted">
-                        <IconContext.Provider value={{ className: 'heart-icon' }}>
-                            <AiFillHeart />
-                        </IconContext.Provider> {thread.likes} likes &bull; { }
-                        {getDateAgo(thread.createdAt)} ago
-                    </p>
-                    <ul id="tags">
-                        {!thread.tags ? null : thread.tags.map((tag, index) => (
-                            <Tag tag={tag} findTag={findTag} key={index} />
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    );
-};
-*/
 
 let PageSize = 5;
 
@@ -229,7 +194,12 @@ export default function ThreadList({ user }) {
             </Nav>
 
             {threadList}
-            <div>{loading && 'Loading...'}</div>
+            <div>{loading && 
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>}
+            </div>
+            
             <div>{error && 'Error'}</div>
 
             {/*
