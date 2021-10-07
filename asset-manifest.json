@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/forum-react-app/static/css/main.d5336f42.chunk.css",
-    "main.js": "/forum-react-app/static/js/main.9445263a.chunk.js",
-    "main.js.map": "/forum-react-app/static/js/main.9445263a.chunk.js.map",
+    "main.js": "/forum-react-app/static/js/main.41d8d8d8.chunk.js",
+    "main.js.map": "/forum-react-app/static/js/main.41d8d8d8.chunk.js.map",
     "runtime-main.js": "/forum-react-app/static/js/runtime-main.d71e7a9b.js",
     "runtime-main.js.map": "/forum-react-app/static/js/runtime-main.d71e7a9b.js.map",
-    "static/js/2.121bf1da.chunk.js": "/forum-react-app/static/js/2.121bf1da.chunk.js",
-    "static/js/2.121bf1da.chunk.js.map": "/forum-react-app/static/js/2.121bf1da.chunk.js.map",
+    "static/js/2.97126293.chunk.js": "/forum-react-app/static/js/2.97126293.chunk.js",
+    "static/js/2.97126293.chunk.js.map": "/forum-react-app/static/js/2.97126293.chunk.js.map",
     "static/js/3.224d53e1.chunk.js": "/forum-react-app/static/js/3.224d53e1.chunk.js",
     "static/js/3.224d53e1.chunk.js.map": "/forum-react-app/static/js/3.224d53e1.chunk.js.map",
     "index.html": "/forum-react-app/index.html",
     "static/css/main.d5336f42.chunk.css.map": "/forum-react-app/static/css/main.d5336f42.chunk.css.map",
-    "static/js/2.121bf1da.chunk.js.LICENSE.txt": "/forum-react-app/static/js/2.121bf1da.chunk.js.LICENSE.txt"
+    "static/js/2.97126293.chunk.js.LICENSE.txt": "/forum-react-app/static/js/2.97126293.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.d71e7a9b.js",
-    "static/js/2.121bf1da.chunk.js",
+    "static/js/2.97126293.chunk.js",
     "static/css/main.d5336f42.chunk.css",
-    "static/js/main.9445263a.chunk.js"
+    "static/js/main.41d8d8d8.chunk.js"
   ]
 }
