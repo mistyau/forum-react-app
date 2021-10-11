@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/forum-react-app/static/css/main.d5336f42.chunk.css",
-    "main.js": "/forum-react-app/static/js/main.42306d9f.chunk.js",
-    "main.js.map": "/forum-react-app/static/js/main.42306d9f.chunk.js.map",
+    "main.js": "/forum-react-app/static/js/main.5a7b7b2d.chunk.js",
+    "main.js.map": "/forum-react-app/static/js/main.5a7b7b2d.chunk.js.map",
     "runtime-main.js": "/forum-react-app/static/js/runtime-main.d71e7a9b.js",
     "runtime-main.js.map": "/forum-react-app/static/js/runtime-main.d71e7a9b.js.map",
     "static/js/2.97126293.chunk.js": "/forum-react-app/static/js/2.97126293.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.d71e7a9b.js",
     "static/js/2.97126293.chunk.js",
     "static/css/main.d5336f42.chunk.css",
-    "static/js/main.42306d9f.chunk.js"
+    "static/js/main.5a7b7b2d.chunk.js"
   ]
 }
