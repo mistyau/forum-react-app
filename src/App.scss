@@ -15,6 +15,7 @@
 
 body {
   margin-bottom: 80px;
+  background-color: theme-color("light");
 }
 
 .footer {
@@ -45,11 +46,6 @@ body {
 html {
   position: relative;
   min-height: 100%;
-  background-color: theme-color("light");
-}
-
-.wrapper {
-  background-color: theme-color("light");
 }
 
 .form-wrapper {
