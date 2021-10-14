@@ -125,11 +125,11 @@ export default function ThreadList({ user }) {
     const handleSelect = (selectedKey) => {
         if (selectedKey !== sort) {
             setThreads([]);
+            setCurrentPage(1);
+            setSort(selectedKey);
+            setLoading(true);
+            setError(false);
         }
-        setCurrentPage(1);
-        setSort(selectedKey);
-        setLoading(true);
-        setError(false);
     }
 
     function toggleLike(userLiked, id) {
