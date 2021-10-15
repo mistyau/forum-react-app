@@ -1,3 +1,28 @@
+# forum-react-app
+
+A single page application (SPA) for a discussion forum. It consumes a [Spring Boot REST API](https://github.com/mistyau/forum-backend).
+
+Built with [React.js](https://reactjs.org/) and [Bootstrap](https://getbootstrap.com/).
+
+## Features
+
+- User sign-up/login
+- Basic CRUD functions (create, read, update, and delete) for threads and posts centralized in a user dashboard
+- Thread tagging system with search functionality
+- Like and comment functionality
+- Interactive top five most used tags display
+- Thread list with infinite scrolling and sort
+
+## Demo
+
+![jif](/img/home_page.gif)
+
+![jif](/img/dashboard_in_action.gif)
+
+![jif](/img/create_thread.gif)
+
+![jif](/img/create_post.gif)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
