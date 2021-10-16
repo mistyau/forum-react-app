@@ -47,7 +47,7 @@ export default function SignUp() {
             password: formData.password
         };
 
-        instance.post("http://localhost:8080/api/v1/auth/signup", newUser)
+        instance.post("/auth/signup", newUser)
             .then(response => {
                 console.log(response.data);
                 history.push("/login");

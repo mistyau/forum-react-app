@@ -31,10 +31,6 @@ instance.interceptors.response.use((response) => {
         return Promise.reject(error);
     }
 
-    if (originalRequest.url.includes('auth')) {
-        return Promise.reject(error);
-    }
-
     // if the refresh token is not valid either, then user needs to login again
     if (error.response.status === 400 && originalRequest.url === 'http://localhost:8080/api/v1/auth/refresh/token') {
         window.location.href = '/login';
@@ -42,7 +38,7 @@ instance.interceptors.response.use((response) => {
     }
 
     // status code should be 401, but i haven't changed it on the backend, so it's 403 for now
-    if (error.response.status === 403 && !originalRequest._retry) {
+    if (error.response.status === 403 && !originalRequest._retry && !originalRequest.url.includes('auth')) {
         originalRequest._retry = true;
 
         const url = 'http://localhost:8080/api/v1/auth/refresh/token';
